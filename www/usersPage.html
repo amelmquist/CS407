@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<body>
+
+<ion-view view-title="Users">
+  <ion-nav-buttons side="left">
+    <button class="button" ng-click="exitToRoomBuilder()">
+      Return to Room
+    </button>
+  </ion-nav-buttons>
+
+  <ion-content class="padding">
+
+  </br> </br>
+
+    <!-- TODO: add ng-click deleteUser (function in Room factory)?. Plus deleting host returns to routing screen? -->
+    <div align = "center">
+        <li class="button button-positive button-full" ng-repeat="value in room.allUsersInRoom">
+          {{value.name}} </br> {{value.numSubmissions}} Songs Submitted </br>
+        </li>
+  </div>
+
+  </ion-content>
+</ion-view>
+
+</body>
+</html>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<body>
+
+  <ion-view view-title="Room (Host View)">
+    <ion-nav-buttons side="left">
+      <button class="button" ng-click="closeRoom()">
+        Close Room
+      </button>
+    </ion-nav-buttons>
+
+    <ion-nav-buttons side="right">
+      <button class="button" ng-click="changeOptions()">
+        Options
+      </button>
+    </ion-nav-buttons>
+
+    <ion-nav-buttons side="secondary">
+      <button class="button" ng-click="viewUsers()">
+        {{numUsers}} User(s)
+      </button>
+    </ion-nav-buttons>
+
+    <ion-content class="padding">
+
+      <h1>{{hostName}}, you're hosting this room: {{roomName}}!</h1>
+      <br><br>
+      <button class="button" ng-click="play()">Play</button>
+      <button class="button" ng-click="pause()">Pause</button>
+
+      <br><br>
+      <h1>Debug: {{debug}}</h1>
+
+    </ion-content>
+  </ion-view>
+</body>
+</html>
