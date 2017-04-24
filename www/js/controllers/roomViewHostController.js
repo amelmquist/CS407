@@ -2,7 +2,17 @@
  * Created by Steven on 3/5/2017.
  */
 
-angular.module('ionicApp').controller('roomViewHostController', function($scope, $state) {
+angular.module('ionicApp')
+  .factory('Song', function()
+  {
+    return function(name, duration)
+    {
+      this.name = name;
+      this.duration = duration;
+    };
+  })
+  .controller('roomViewHostController', function($scope, $state, $interval, Song) {
+
 
   $scope.closeRoom = function() {
     //Todo, make this function ask for confirmation before closing the room
@@ -13,6 +23,84 @@ angular.module('ionicApp').controller('roomViewHostController', function($scope,
   $scope.changeOptions = function() {
     $state.go('roomOptionsPage');
   };
+
+  $scope.theTime = "Finding time...";
+  $interval(clock, 1000);
+  function clock()
+  {
+    var currentTime = new Date();
+    $scope.theTime = currentTime.toLocaleTimeString();
+  }
+
+
+
+
+  $scope.musicQueue = [];
+
+  function getFromQueue() {
+
+    if($scope.musicQueue.length > 0)
+    {
+      return $scope.musicQueue.shift();
+    }
+    else
+    {
+      return 0;
+    }
+  };
+
+
+  $scope.timeRemaining;
+
+  $scope.songPlaying = false; //initially start with no song
+  $scope.currentSong = "";
+
+  var intervalPromise;
+
+  function updatePlaylist()
+  {
+    if($scope.songPlaying != true)
+    {
+      if($scope.musicQueue.length > 0)
+      {
+
+        $scope.currentSong = getFromQueue();
+        $scope.timeRemaining = $scope.currentSong.duration;
+        $scope.songPlaying = true;
+        intervalPromise = $interval(ageSong, 1000);
+      }
+    }
+  }
+
+  function ageSong()
+  {
+    $scope.timeRemaining--;
+    if($scope.timeRemaining == 0)
+    {
+      $scope.songPlaying = false;
+      if(angular.isDefined(intervalPromise))
+      {
+        $interval.cancel(intervalPromise);
+      }
+      updatePlaylist();
+    }
+  }
+
+  $scope.addSongX = function()
+  {
+    //songX is 4 seconds long
+    var newSong = new Song("Song X", 4);
+    $scope.musicQueue.push(newSong);
+    updatePlaylist();
+  };
+  $scope.addSongY = function()
+  {
+    //songY is 7 seconds long
+    var newSong = new Song("Song Y", 7);
+    $scope.musicQueue.push(newSong);
+    updatePlaylist();
+  };
+
 
 
 
