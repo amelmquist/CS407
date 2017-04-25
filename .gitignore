@@ -11,3 +11,5 @@ temp/
 *.log
 *.swp
 *.idea/
+.io-config.json
+ionic.config.json
