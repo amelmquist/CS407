@@ -2,10 +2,10 @@
  * Created by Steven on 3/5/2017.
  */
 
-angular.module('ionicApp').controller('roomViewGuestController', function($scope, $state) {
+starter.controller('roomViewGuestController', function($rootScope, $scope, $state, $ionicViewSwitcher) {
 
   $scope.leaveRoom = function() {
-    //Todo, make this transition always go "backward" google seems to think we need to use $ionicHistory goBack
+    $ionicViewSwitcher.nextDirection('back');
     $state.go('routingPage');
   };
 

@@ -1,9 +1,5 @@
-/**
- * Created by Steven on 3/5/2017.
- */
-
-angular.module('ionicApp').controller('routingPageController', function($scope, $state) {
-
+starter.controller('routingPageController', function($rootScope, $scope, $state, $ionicViewSwitcher) {
+  console.log($rootScope);
   $scope.joinRoom = function() {
     $state.go('roomViewGuest');
   };
@@ -13,6 +9,7 @@ angular.module('ionicApp').controller('routingPageController', function($scope, 
   };
 
   $scope.exitToWelcomePage = function() {
+    $ionicViewSwitcher.nextDirection('back');
     $state.go('welcomePage');
   }
 

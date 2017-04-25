@@ -33,12 +33,19 @@ starter.config(function($stateProvider, $urlRouterProvider){
     .state('roomViewHost', {
       url: '/roomViewHostURL',
       templateUrl: 'templates/roomViewHost.html',
-      controller: 'roomViewHostController'
+      controller: 'roomViewHostController',
+      params: {room_name: null, password: null}
     })
     .state('roomOptionsPage', {
       url: '/roomOptionsPageURL',
       templateUrl: 'templates/roomOptionsPage.html',
       controller: 'roomOptionsPageController'
+    })
+    .state('usersPage', {
+      url: '/usersPageURL',
+      templateUrl: 'templates/usersPage.html',
+      controller: 'usersPageController',
+      params: {room: null}
     })
     .state('firstPage', {
       url: '/firstURL',
