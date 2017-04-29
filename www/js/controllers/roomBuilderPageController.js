@@ -7,7 +7,7 @@ starter.controller('roomBuilderPageController', function($scope, $state, $ionicV
   $scope.password = "";
 
   $scope.cancelAndGoBackToRouting = function() {
-    $state.go('roomViewGuest');
+    $state.go('routingPage');
   };
 
   $scope.createRoom = function() {
