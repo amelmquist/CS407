@@ -251,6 +251,7 @@ starter.controller('roomViewHostController', function(Room, $rootScope, $scope, 
   };
 
   //logic for file management
+  $scope.musicLibrary = [];
   var fs = new $fileFactory();
   $scope.debug = "location 1: Debug started";
   $ionicPlatform.ready(function() {
@@ -261,48 +262,98 @@ starter.controller('roomViewHostController', function(Room, $rootScope, $scope, 
       $scope.perms = error;
     });
 
+    //Get the root music directory - found in sdcard/Music (externalRootStorage()/Music)
     fs.getEntriesAtRoot().then(function(result) {
       //$scope.debug = "location 4";
       $scope.files = result;
       $scope.debug = "Results obtained!";
+      $scope.getAllFiles($scope.files);
+      //$scope.debug = "finished loading music";
+      $scope.debug = $scope.musicLibrary;
     }, function(error) {
       console.error(error);
     });
 
-    var newSong;
-    $scope.getDirectoryContents = function(file, path) {
-      //if mp3 selected, add it to the playlist
-      if(path.includes(".mp3")){
-        $scope.debug = "mp3 detected!";
-        //$scope.debug = path;
-
-        newSong = new Media(path,
-          // success callback
-          function () { $scope.debug = "playAudio():Audio Success"; },
-          // error callback
-          function (err) { $scope.debug = "playAudio():Audio Error: " + err; }
-        );
-        file.name = file.name.split('.mp3')[0];
-        $scope.musicQueue.push({"name": file.name, "song":newSong});
-        $scope.debug = "added song to queue";
-        $scope.debug = newSong.getDuration();
-
-        //$scope.debug = "Just before reading media tags";
-
-
+    //recursive function for going through entire music library
+    $scope.getAllFiles = function(entries){
+      $scope.debug = "Entered recursive function"
+      //for all entries in path, either add them to music library or add their contents
+      for (var i = 0; i < entries.length; i++) {
+        $scope.debug = "entered for loop iter: " + i;
+        if(entries[i].isFile){
+          //add song to music library
+          $scope.debug = "found a file!";
+          if(entries[i].name.includes('.mp3')){
+            $scope.debug = "it was an mp3 file!";
+            var name = entries[i].name.split('.mp3')[0];
+            $scope.debug = "file name was: " + name;
+            $scope.debug = "located at: " + entries[i].nativeURL;
+            var foundSong = new Media(entries[i].nativeURL,
+              // success callback
+              function () { $scope.debug = "created media"; },
+              // error callback
+              function (err) { $scope.debug = "failed to create media: " + err; }
+            );
+            $scope.debug = "Created media for song";
+            $scope.musicLibrary.push({"name":name, "song":foundSong});
+            $scope.debug = "pushed file";
+          }
+        }
+        else{
+          fs.getEntries(entries[i].nativeURL).then(function(result) {
+            $scope.getAllFiles(result);
+          });
+        }
+        $scope.debug = "end of for loop";
       }
-      else{
-        fs.getEntries(path).then(function(result) {
-         $scope.files = result;
-         $scope.files.unshift({name: "[parent]"});
-         fs.getParentDirectory(path).then(function(result) {
-           result.name = "[parent]";
-           $scope.files[0] = result;
-         });
-        });
-      }
+      $scope.debug = "end of function";
+      // $scope.debug = $scope.musicLibrary;
     }
+
+
+    // var newSong;
+    // $scope.getDirectoryContents = function(file, path) {
+    //   //if mp3 selected, add it to the playlist
+    //   if(path.includes(".mp3")){
+    //     $scope.debug = "mp3 detected!";
+    //     //$scope.debug = path;
+    //
+    //     newSong = new Media(path,
+    //       // success callback
+    //       function () { $scope.debug = "playAudio():Audio Success"; },
+    //       // error callback
+    //       function (err) { $scope.debug = "playAudio():Audio Error: " + err; }
+    //     );
+    //     file.name = file.name.split('.mp3')[0];
+    //     $scope.musicQueue.push({"name": file.name, "song":newSong});
+    //
+    //     //$scope.debug = "added song to queue";
+    //     // $scope.debug = newSong.getDuration();
+    //     // $scope.debug = newSong.artist;
+    //     // $scope.debug = newSong.title;
+    //     // $scope.debug = file.artist;
+    //
+    //     //$scope.debug = "Just before reading media tags";
+    //
+    //     //$scope.debug = require("jsmediatags");
+    //
+    //   }
+    //   else{
+    //     fs.getEntries(path).then(function(result) {
+    //      $scope.files = result;
+    //      $scope.files.unshift({name: "[parent]"});
+    //      fs.getParentDirectory(path).then(function(result) {
+    //        result.name = "[parent]";
+    //        $scope.files[0] = result;
+    //      });
+    //     });
+    //   }
+    // }
   });
+
+  $scope.addSongtoQueue = function(songtoAdd){
+    $scope.musicQueue.push({"name":songtoAdd.name,"song":songtoAdd.song});
+  };
 
 
   // dealing with side menu
