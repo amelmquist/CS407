@@ -96,6 +96,7 @@ starter.factory('Song', function()
     getEntriesAtRoot: function() {
       var deferred = $q.defer();
       var homePath = cordova.file.externalRootDirectory;
+      var homePath = homePath + "/Music";
       window.resolveLocalFileSystemURI(homePath, function(fileSystem) {
         var directoryReader = fileSystem.createReader();
         directoryReader.readEntries(function(entries) {
@@ -230,20 +231,21 @@ starter.controller('roomViewHostController', function(Room, $rootScope, $scope, 
   var song;
 
   $scope.play = function(){
-    $scope.musicQueue[0].play();
+    $scope.musicQueue[0].song.play();
     $scope.debug = "Playing music!";
   };
 
   $scope.pause = function(){
-    $scope.musicQueue[0].pause();
-    $scope.dubug = "Paused music!";
+    $scope.musicQueue[0].song.pause();
+    $scope.debug = "Paused music!";
   };
 
   $scope.next = function(){
-    $scope.musicQueue[0].stop();
+    $scope.musicQueue[0].song.stop();
+
     getFromQueue();
     $scope.play();
-    $scope.dubug = "next song!";
+    $scope.debug = "next song!";
   };
 
   //logic for file management
@@ -266,21 +268,25 @@ starter.controller('roomViewHostController', function(Room, $rootScope, $scope, 
     });
 
     var newSong;
-    $scope.getDirectoryContents = function(path) {
+    $scope.getDirectoryContents = function(file, path) {
       //if mp3 selected, add it to the playlist
       if(path.includes(".mp3")){
         $scope.debug = "mp3 detected!";
         //$scope.debug = path;
+
         newSong = new Media(path,
           // success callback
           function () { $scope.debug = "playAudio():Audio Success"; },
           // error callback
           function (err) { $scope.debug = "playAudio():Audio Error: " + err; }
         );
-        $scope.musicQueue.push(newSong);
-        $scope.debug = "Just before reading media tags";
+        file.name = file.name.split('.mp3')[0];
+        $scope.musicQueue.push({"name": file.name, "song":newSong});
+        $scope.debug = "added song to queue";
+        $scope.debug = newSong.getDuration(newSong);
+        //$scope.debug = "Just before reading media tags";
 
-        //try to get a byte array of the file to read the ID3 tags
+
 
       }
       else{

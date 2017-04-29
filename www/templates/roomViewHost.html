@@ -22,7 +22,7 @@
     </ion-nav-buttons>
 
     <ion-content class="padding" overflow-scroll="true">
-      <ion-scroll overflow-scroll="false" zooming="true" direction="y" style="width: 500px; height: 500px">
+      <ion-scroll overflow-scroll="false" zooming="false" direction="y" style="width: 500px; height: 500px">
 
       <!--<h1>{{hostName}}, you're hosting this room: {{roomName}}!</h1>
       <br><br>-->
@@ -38,8 +38,9 @@
       <div ng-if="songPlaying">timeRemaining: {{timeRemaining}}</div>
       <!--<button class="button" ng-click="addSongX()">Add Song X</button>
       <button class="button" ng-click="addSongY()">Add Song Y</button>-->
+        <h1>----Playlist----</h1>
       <ul>
-        <li ng-repeat="thisSong in musicQueue">{{thisSong}}</li>
+        <li ng-repeat="thisSong in musicQueue">{{thisSong.name}},{{thisSong.song.duration}}</li>
       </ul>
 
       <div>
@@ -48,7 +49,7 @@
       </div>
       <div class="list">
         <div ng-repeat="file in files">
-          <a class="item item-icon-left" ng-click="getDirectoryContents(file.nativeURL)"> <!--href="#"-->
+          <a class="item item-icon-left" ng-click="getDirectoryContents(file,file.nativeURL)"> <!--href="#"-->
             <i ng-show="file.isDirectory" class="icon ion-folder"></i>
             <i ng-show="file.isFile" class="icon ion-document"></i>
             {{file.name}}
