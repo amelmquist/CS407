@@ -129,6 +129,7 @@ starter.factory('Song', function()
 })
 
 starter.controller('roomViewHostController', function(Room, $rootScope, $scope, $state, $stateParams, $ionicViewSwitcher, $interval, Song, $fileFactory, $ionicPlatform) {
+  //room host control properties
   $scope.roomName = $stateParams.room_name;
   $scope.password = $stateParams.password;
   $scope.hostName = $rootScope.currUser.name;
@@ -161,10 +162,10 @@ starter.controller('roomViewHostController', function(Room, $rootScope, $scope, 
     });
   };
 
+  //music queue control mechanisms
   $scope.musicQueue = [];
 
   function getFromQueue() {
-
     if($scope.musicQueue.length > 0)
     {
       return $scope.musicQueue.shift();
@@ -189,7 +190,6 @@ starter.controller('roomViewHostController', function(Room, $rootScope, $scope, 
     {
       if($scope.musicQueue.length > 0)
       {
-
         $scope.currentSong = getFromQueue();
         $scope.timeRemaining = $scope.currentSong.duration;
         $scope.songPlaying = true;
@@ -230,24 +230,20 @@ starter.controller('roomViewHostController', function(Room, $rootScope, $scope, 
   var song;
 
   $scope.play = function(){
-     var url = "file:///www/example.mp3";
-    // var url = "http://audio.ibeat.org/content/p1rj1s/p1rj1s_-_rockGuitar.mp3";
-    // var url = "cdvfile://localhost/persistent/audio/hangouts_incoming_call.ogg"
-
-    song = new Media(url,
-      // success callback
-      function () { $scope.debug = "playAudio():Audio Success"; },
-      // error callback
-      function (err) { $scope.debug = "playAudio():Audio Error: " + err; }
-    );
-    song.play();
-
+    $scope.musicQueue[0].play();
     $scope.debug = "Playing music!";
   };
 
   $scope.pause = function(){
-    song.pause();
+    $scope.musicQueue[0].pause();
     $scope.dubug = "Paused music!";
+  };
+
+  $scope.next = function(){
+    $scope.musicQueue[0].stop();
+    getFromQueue();
+    $scope.play();
+    $scope.dubug = "next song!";
   };
 
   //logic for file management
@@ -261,7 +257,6 @@ starter.controller('roomViewHostController', function(Room, $rootScope, $scope, 
       $scope.perms = error;
     });
 
-    // $scope.debug = "location 3";
     fs.getEntriesAtRoot().then(function(result) {
       //$scope.debug = "location 4";
       $scope.files = result;
@@ -270,22 +265,22 @@ starter.controller('roomViewHostController', function(Room, $rootScope, $scope, 
       console.error(error);
     });
 
-    var currentSong;
+    var newSong;
     $scope.getDirectoryContents = function(path) {
+      //if mp3 selected, add it to the playlist
       if(path.includes(".mp3")){
         $scope.debug = "mp3 detected!";
-        $scope.debug = path;
-        if(currentSong != null) {
-          currentSong.pause();
-          currentSong.stop();
-        }
-        currentSong = new Media(path,
+        //$scope.debug = path;
+        newSong = new Media(path,
           // success callback
           function () { $scope.debug = "playAudio():Audio Success"; },
           // error callback
           function (err) { $scope.debug = "playAudio():Audio Error: " + err; }
         );
-        currentSong.play();
+        $scope.musicQueue.push(newSong);
+        $scope.debug = "Just before reading media tags";
+
+        //try to get a byte array of the file to read the ID3 tags
 
       }
       else{
