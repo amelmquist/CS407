@@ -21,17 +21,17 @@
       </button>
     </ion-nav-buttons>
 
-    <ion-content class="padding">
+    <ion-content class="padding" overflow-scroll="true">
 
-      <h1>{{hostName}}, you're hosting this room: {{roomName}}!</h1>
-      <br><br>
+      <!--<h1>{{hostName}}, you're hosting this room: {{roomName}}!</h1>
+      <br><br>-->
       <button class="button" ng-click="play()">Play</button>
       <button class="button" ng-click="pause()">Pause</button>
 
-      <br><br>
+      <!--<br><br>-->
       <h1>Debug: {{debug}}</h1>
 
-      <br><br>
+      <!--<br><br>-->
       <div ng-if="songPlaying">Now Playing: {{currentSong.name}}</div>
       <div ng-if="songPlaying">timeRemaining: {{timeRemaining}}</div>
       <button class="button" ng-click="addSongX()">Add Song X</button>
@@ -40,7 +40,22 @@
         <li ng-repeat="thisSong in musicQueue">{{thisSong.name}}</li>
       </ul>
 
+      <div>
+        <!--<h1>Permissions: {{perms}}</h1>-->
+        <!--<h1>Debug: {{debug}}</h1>-->
+      </div>
+      <div class="list">
+        <div ng-repeat="file in files">
+          <a class="item item-icon-left" ng-click="getDirectoryContents(file.nativeURL)"> <!--href="#"-->
+            <i ng-show="file.isDirectory" class="icon ion-folder"></i>
+            <i ng-show="file.isFile" class="icon ion-document"></i>
+            {{file.name}}
+          </a>
+        </div>
+      </div>
+
     </ion-content>
+
   </ion-view>
 </body>
 </html>

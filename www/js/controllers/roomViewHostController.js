@@ -74,7 +74,61 @@ starter.factory('Song', function()
   };
 })
 
-starter.controller('roomViewHostController', function(Room, $rootScope, $scope, $state, $stateParams, $ionicViewSwitcher, $interval, Song) {
+.factory("$fileFactory", function($q) {
+
+  var File = function() { };
+  File.prototype = {
+
+    getParentDirectory: function(path) {
+      var deferred = $q.defer();
+      window.resolveLocalFileSystemURI(path, function(fileSystem) {
+        fileSystem.getParent(function(result) {
+          deferred.resolve(result);
+        }, function(error) {
+          deferred.reject(error);
+        });
+      }, function(error) {
+        deferred.reject(error);
+      });
+      return deferred.promise;
+    },
+
+    getEntriesAtRoot: function() {
+      var deferred = $q.defer();
+      var homePath = cordova.file.externalRootDirectory;
+      window.resolveLocalFileSystemURI(homePath, function(fileSystem) {
+        var directoryReader = fileSystem.createReader();
+        directoryReader.readEntries(function(entries) {
+          deferred.resolve(entries);
+        }, function(error) {
+          deferred.reject(error);
+        });
+      }, function(error) {
+        deferred.reject(error);
+      });
+      return deferred.promise;
+    },
+
+    getEntries: function(path) {
+      var deferred = $q.defer();
+      window.resolveLocalFileSystemURI(path, function(fileSystem) {
+        var directoryReader = fileSystem.createReader();
+        directoryReader.readEntries(function(entries) {
+          deferred.resolve(entries);
+        }, function(error) {
+          deferred.reject(error);
+        });
+      }, function(error) {
+        deferred.reject(error);
+      });
+      return deferred.promise;
+    }
+  };
+  return File;
+
+})
+
+starter.controller('roomViewHostController', function(Room, $rootScope, $scope, $state, $stateParams, $ionicViewSwitcher, $interval, Song, $fileFactory, $ionicPlatform) {
   $scope.roomName = $stateParams.room_name;
   $scope.password = $stateParams.password;
   $scope.hostName = $rootScope.currUser.name;
@@ -87,7 +141,7 @@ starter.controller('roomViewHostController', function(Room, $rootScope, $scope, 
   console.log($rootScope);
   console.log($scope);
 
-  if ($scope.room.quitRoom === true) {
+  if ($scope.room.quitRoom == true) {
     $scope.closeRoom();
   }
 
@@ -195,4 +249,56 @@ starter.controller('roomViewHostController', function(Room, $rootScope, $scope, 
     song.pause();
     $scope.dubug = "Paused music!";
   };
+
+  //logic for file management
+  var fs = new $fileFactory();
+  $scope.debug = "location 1: Debug started";
+  $ionicPlatform.ready(function() {
+    $scope.debug = "location 1.5";
+    cordova.plugins.diagnostic.requestExternalStorageAuthorization(function(status){
+      $scope.perms = "Authorization: " + (status == cordova.plugins.diagnostic.permissionStatus.GRANTED ? "granted" : "denied");
+    }, function(error){
+      $scope.perms = error;
+    });
+
+    // $scope.debug = "location 3";
+    fs.getEntriesAtRoot().then(function(result) {
+      //$scope.debug = "location 4";
+      $scope.files = result;
+      $scope.debug = "Results obtained!";
+    }, function(error) {
+      console.error(error);
+    });
+
+    var currentSong;
+    $scope.getDirectoryContents = function(path) {
+      if(path.includes(".mp3")){
+        $scope.debug = "mp3 detected!";
+        $scope.debug = path;
+        if(currentSong != null) {
+          currentSong.pause();
+          currentSong.stop();
+        }
+        currentSong = new Media(path,
+          // success callback
+          function () { $scope.debug = "playAudio():Audio Success"; },
+          // error callback
+          function (err) { $scope.debug = "playAudio():Audio Error: " + err; }
+        );
+        currentSong.play();
+
+      }
+      else{
+        fs.getEntries(path).then(function(result) {
+         $scope.files = result;
+         $scope.files.unshift({name: "[parent]"});
+         fs.getParentDirectory(path).then(function(result) {
+           result.name = "[parent]";
+           $scope.files[0] = result;
+         });
+        });
+      }
+    }
+  });
 });
+
