@@ -129,7 +129,9 @@ starter.factory('Song', function()
 
 })
 
-starter.controller('roomViewHostController', function(Room, $rootScope, $scope, $state, $stateParams, $ionicViewSwitcher, $interval, Song, $fileFactory, $ionicPlatform) {
+starter.controller('roomViewHostController', function(Room, $rootScope, $scope, $state, $stateParams,
+                                                      $ionicViewSwitcher, $interval, Song, $fileFactory,
+                                                      $ionicPlatform, $ionicSideMenuDelegate) {
   //room host control properties
   $scope.roomName = $stateParams.room_name;
   $scope.password = $stateParams.password;
@@ -232,7 +234,7 @@ starter.controller('roomViewHostController', function(Room, $rootScope, $scope, 
 
   $scope.play = function(){
     $scope.musicQueue[0].song.play();
-    $scope.debug = "Playing music!";
+    $scope.debug = "playing song";
   };
 
   $scope.pause = function(){
@@ -241,7 +243,7 @@ starter.controller('roomViewHostController', function(Room, $rootScope, $scope, 
   };
 
   $scope.next = function(){
-    $scope.musicQueue[0].song.stop();
+    $scope.musicQueue[0].song.release();
 
     getFromQueue();
     $scope.play();
@@ -283,9 +285,9 @@ starter.controller('roomViewHostController', function(Room, $rootScope, $scope, 
         file.name = file.name.split('.mp3')[0];
         $scope.musicQueue.push({"name": file.name, "song":newSong});
         $scope.debug = "added song to queue";
-        $scope.debug = newSong.getDuration(newSong);
-        //$scope.debug = "Just before reading media tags";
+        $scope.debug = newSong.getDuration();
 
+        //$scope.debug = "Just before reading media tags";
 
 
       }
@@ -301,5 +303,12 @@ starter.controller('roomViewHostController', function(Room, $rootScope, $scope, 
       }
     }
   });
+
+
+  // dealing with side menu
+  $scope.toggleMenu = function() {
+    $ionicSideMenuDelegate.toggleRight();
+  };
+
 });
 

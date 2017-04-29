@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <body>
-
   <ion-view view-title="Room (Host View)">
     <ion-nav-buttons side="left">
       <button class="button" ng-click="closeRoom()">
@@ -20,46 +19,79 @@
         {{numUsers}} User(s)
       </button>
     </ion-nav-buttons>
+    <ion-side-menus>
+      <!-- Center content -->
+      <ion-pane ion-side-menu-content>
 
-    <ion-content class="padding" overflow-scroll="true">
-      <ion-scroll overflow-scroll="false" zooming="false" direction="y" style="width: 500px; height: 500px">
 
-      <!--<h1>{{hostName}}, you're hosting this room: {{roomName}}!</h1>
-      <br><br>-->
-      <button class="button" ng-click="play()">Play</button>
-      <button class="button" ng-click="pause()">Pause</button>
-      <button class="button" ng-click="next()">Next</button>
+        <ion-content class="padding" overflow-scroll="false">
+          <button class="button" ng-click="toggleMenu()">Toggle</button>
+          <ion-scroll overflow-scroll="false" zooming="true" direction="y" style="width: 500px; height: 500px">
 
-      <!--<br><br>-->
-      <h1>Debug: {{debug}}</h1>
+            <!--<h1>{{hostName}}, you're hosting this room: {{roomName}}!</h1>
+            <br><br>-->
 
-      <br><br>
-      <div ng-if="songPlaying">Now Playing: {{currentSong}}</div>
-      <div ng-if="songPlaying">timeRemaining: {{timeRemaining}}</div>
-      <!--<button class="button" ng-click="addSongX()">Add Song X</button>
-      <button class="button" ng-click="addSongY()">Add Song Y</button>-->
-        <h1>----Playlist----</h1>
-      <ul>
-        <li ng-repeat="thisSong in musicQueue">{{thisSong.name}},{{thisSong.song.duration}}</li>
-      </ul>
+            <button class="button" ng-click="play()">Play</button>
+            <button class="button" ng-click="pause()">Pause</button>
+            <button class="button" ng-click="next()">Next</button>
 
-      <div>
-        <!--<h1>Permissions: {{perms}}</h1>-->
-        <!--<h1>Debug: {{debug}}</h1>-->
-      </div>
-      <div class="list">
-        <div ng-repeat="file in files">
-          <a class="item item-icon-left" ng-click="getDirectoryContents(file,file.nativeURL)"> <!--href="#"-->
-            <i ng-show="file.isDirectory" class="icon ion-folder"></i>
-            <i ng-show="file.isFile" class="icon ion-document"></i>
-            {{file.name}}
-          </a>
-        </div>
-      </div>
+            <!--<br><br>-->
+            <h1>Debug: {{debug}}</h1>
 
-      </ion-scroll>
-    </ion-content>
+            <br><br>
+            <div ng-if="songPlaying">Now Playing: {{currentSong}}</div>
+            <div ng-if="songPlaying">timeRemaining: {{timeRemaining}}</div>
+            <!--<button class="button" ng-click="addSongX()">Add Song X</button>
+            <button class="button" ng-click="addSongY()">Add Song Y</button>-->
+            <h1>----Playlist----</h1>
+            <ul>
+              <li ng-repeat="thisSong in musicQueue">{{thisSong.name}},{{thisSong.song.duration}}</li>
+            </ul>
+
+            <!--<div>-->
+              <!--<h1>Permissions: {{perms}}</h1>-->
+              <!--<h1>Debug: {{debug}}</h1>-->
+            <!--</div>-->
+            <!--<div class="list">-->
+              <!--<div ng-repeat="file in files">-->
+                <!--<a class="item item-icon-left" ng-click="getDirectoryContents(file,file.nativeURL)"> &lt;!&ndash;href="#"&ndash;&gt;-->
+                  <!--<i ng-show="file.isDirectory" class="icon ion-folder"></i>-->
+                  <!--<i ng-show="file.isFile" class="icon ion-document"></i>-->
+                  <!--{{file.name}}-->
+                <!--</a>-->
+              <!--</div>-->
+            <!--</div>-->
+
+          </ion-scroll>
+
+
+        </ion-content>
+
+
+      </ion-pane>
+
+      <!-- Right menu -->
+      <ion-side-menu side="right">
+        <ion-scroll overflow-scroll="false" zooming="false" direction="y" style="width: 100%; height: 100%">
+          <br><br>
+          <div>
+            <h1>Music Library</h1>
+          </div>
+          <br>
+          <div class="list">
+            <div ng-repeat="file in files">
+              <a class="item item-icon-left" ng-click="getDirectoryContents(file,file.nativeURL)"> <!--href="#"-->
+                <i ng-show="file.isDirectory" class="icon ion-folder"></i>
+                <i ng-show="file.isFile" class="icon ion-document"></i>
+                {{file.name}}
+              </a>
+            </div>
+          </div>
+        </ion-scroll>
+      </ion-side-menu>
+    </ion-side-menus>
 
   </ion-view>
+
 </body>
 </html>
