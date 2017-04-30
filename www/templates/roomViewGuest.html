@@ -11,7 +11,20 @@
 
     <ion-content class="padding">
 
-      <h1>Check out this room, yo</h1>
+      <h1>{{roomInfo.roomName}}</h1>
+      [DEBUG]Raw room info:<br>
+      {{roomInfo}} <br>
+
+      <input type="text" ng-model="$parent.userMessage" placeholder="Type a message here!">
+      <button ng-click="submitMessage()">Submit</button>
+      <div>Room Messages</div>
+      <ion-list>
+        <ion-item ng-repeat="message in messages">
+          {{message.user}} - {{message.message}}
+        </ion-item>
+
+      </ion-list>
+
 
     </ion-content>
   </ion-view>

@@ -11,26 +11,21 @@
   </ion-nav-buttons>
   <ion-content class="padding">
 
-    </br> </br> </br> </br> </br> </br> </br> </br> </br> </br> </br> </br>
-
     <div align = "center">
-      <h1>Routing Screen</h1>
+      <h1>Available Rooms</h1>
     </div>
 
-    </br> </br>
+    <div align="center" ng-show="loadingRooms">Loading Rooms...</div>
+    <ion-list>
+      <ion-item ng-repeat="room in availableRooms" ng-click="joinRoom(room)">
+        Room: {{room.roomData.roomName}} Messages: ({{room.roomData.numMessages}})
+      </ion-item>
+    </ion-list>
+
+    <br>
 
     <div align = "center">
-      <div style="float: none; width: 35%;">
-        <button class="button button-positive button-large" ng-click="joinRoom()">Join a premade room!</button>
-      </div>
-    </div>
-
-    </br> </br>
-
-    <div align = "center">
-      <div style="float: none; width: 35%;">
-        <button class="button button-positive button-large" ng-click="createRoom()">Create your own room!</button>
-      </div>
+        <button ion-button block style="width:90%" class="button button-positive button-large" ng-click="createRoom()">Create your own room!</button>
     </div>
 
 

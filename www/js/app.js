@@ -4,7 +4,7 @@
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
 
-var starter = angular.module('ionicApp', ['ionic']);
+var starter = angular.module('ionicApp', ['ionic', 'firebase']);
 
 
 starter.config(function($stateProvider, $urlRouterProvider){
@@ -22,6 +22,7 @@ starter.config(function($stateProvider, $urlRouterProvider){
     })
     .state('roomViewGuest', {
       url: '/roomViewGuestURL',
+      params: {"roomID": null},
       templateUrl: 'templates/roomViewGuest.html',
       controller: 'roomViewGuestController'
     })
