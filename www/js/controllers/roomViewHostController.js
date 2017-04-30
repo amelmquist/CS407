@@ -151,6 +151,9 @@ starter.controller('roomViewHostController', function(Room, $rootScope, $scope, 
 
   $scope.closeRoom = function() {
     //Todo, make this function ask for confirmation before closing the room
+    if($scope.currentSong){
+      $scope.currentSong.song.release();
+    }
     $ionicViewSwitcher.nextDirection('back');
     $state.go('routingPage');
   };
@@ -330,11 +333,7 @@ starter.controller('roomViewHostController', function(Room, $rootScope, $scope, 
   });
 
   $scope.addSongtoQueue = function(songtoAdd){
-    songtoAdd.song.play();
-    songtoAdd.song.pause();
-    var dur = songtoAdd.song.getDuration();
-    $scope.musicQueue.push({"name":songtoAdd.name,"song":songtoAdd.song, "durationFormat":(Math.floor(dur/60)+":"+
-    Math.floor(dur%60))});
+    $scope.musicQueue.push({"name":songtoAdd.name,"song":songtoAdd.song});
     songtoAdd.song.release();
   };
 
