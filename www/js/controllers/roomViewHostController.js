@@ -189,6 +189,7 @@ starter.controller('roomViewHostController', function(Room, $rootScope, $scope, 
 
   function updatePlaylist()
   {
+
     if($scope.songPlaying != true)
     {
       if($scope.musicQueue.length > 0)
@@ -215,39 +216,54 @@ starter.controller('roomViewHostController', function(Room, $rootScope, $scope, 
     }
   }
 
-  $scope.addSongX = function()
-  {
-    //songX is 4 seconds long
-    var newSong = new Song("Song X", 4);
-    $scope.musicQueue.push(newSong);
-    updatePlaylist();
-  };
-  $scope.addSongY = function()
-  {
-    //songY is 7 seconds long
-    var newSong = new Song("Song Y", 7);
-    $scope.musicQueue.push(newSong);
-    updatePlaylist();
-  };
+  // $scope.addSongX = function()
+  // {
+  //   //songX is 4 seconds long
+  //   var newSong = new Song("Song X", 4);
+  //   $scope.musicQueue.push(newSong);
+  //   updatePlaylist();
+  // };
+  // $scope.addSongY = function()
+  // {
+  //   //songY is 7 seconds long
+  //   var newSong = new Song("Song Y", 7);
+  //   $scope.musicQueue.push(newSong);
+  //   updatePlaylist();
+  // };
 
   var song;
 
   $scope.play = function(){
-    $scope.musicQueue[0].song.play();
+    $scope.currentSong = $scope.musicQueue[0];
+    $scope.currentSong.song.play();
     $scope.debug = "playing song";
+    $scope.debug = $scope.currentSong.song.getDuration();
+
+    // $scope.currentSong.song.getCurrentPosition(
+    //   // success callback
+    //   function (position) {
+    //     $scope.debug = position;
+    //   },
+    //   // error callback
+    //   function (e) {
+    //     $scope.debug = "error getting duration";
+    //   }
+    // );
+
   };
 
   $scope.pause = function(){
-    $scope.musicQueue[0].song.pause();
+    $scope.currentSong.song.pause();
     $scope.debug = "Paused music!";
+    $scope.debug = currentSong.song.MEDIA_STATE;
   };
 
   $scope.next = function(){
-    $scope.musicQueue[0].song.release();
-
+    $scope.currentSong.song.release();
     getFromQueue();
     $scope.play();
     $scope.debug = "next song!";
+    $scope.debug = currentSong.song.MEDIA_STATE;
   };
 
   //logic for file management
@@ -295,7 +311,9 @@ starter.controller('roomViewHostController', function(Room, $rootScope, $scope, 
               function (err) { $scope.debug = "failed to create media: " + err; }
             );
             $scope.debug = "Created media for song";
-            $scope.musicLibrary.push({"name":name, "song":foundSong});
+
+            $scope.musicLibrary.push({"name":name, "song":foundSong, "duration":foundSong.getDuration()});
+
             $scope.debug = "pushed file";
           }
         }
@@ -309,50 +327,15 @@ starter.controller('roomViewHostController', function(Room, $rootScope, $scope, 
       $scope.debug = "end of function";
       // $scope.debug = $scope.musicLibrary;
     }
-
-
-    // var newSong;
-    // $scope.getDirectoryContents = function(file, path) {
-    //   //if mp3 selected, add it to the playlist
-    //   if(path.includes(".mp3")){
-    //     $scope.debug = "mp3 detected!";
-    //     //$scope.debug = path;
-    //
-    //     newSong = new Media(path,
-    //       // success callback
-    //       function () { $scope.debug = "playAudio():Audio Success"; },
-    //       // error callback
-    //       function (err) { $scope.debug = "playAudio():Audio Error: " + err; }
-    //     );
-    //     file.name = file.name.split('.mp3')[0];
-    //     $scope.musicQueue.push({"name": file.name, "song":newSong});
-    //
-    //     //$scope.debug = "added song to queue";
-    //     // $scope.debug = newSong.getDuration();
-    //     // $scope.debug = newSong.artist;
-    //     // $scope.debug = newSong.title;
-    //     // $scope.debug = file.artist;
-    //
-    //     //$scope.debug = "Just before reading media tags";
-    //
-    //     //$scope.debug = require("jsmediatags");
-    //
-    //   }
-    //   else{
-    //     fs.getEntries(path).then(function(result) {
-    //      $scope.files = result;
-    //      $scope.files.unshift({name: "[parent]"});
-    //      fs.getParentDirectory(path).then(function(result) {
-    //        result.name = "[parent]";
-    //        $scope.files[0] = result;
-    //      });
-    //     });
-    //   }
-    // }
   });
 
   $scope.addSongtoQueue = function(songtoAdd){
-    $scope.musicQueue.push({"name":songtoAdd.name,"song":songtoAdd.song});
+    songtoAdd.song.play();
+    songtoAdd.song.pause();
+    var dur = songtoAdd.song.getDuration();
+    $scope.musicQueue.push({"name":songtoAdd.name,"song":songtoAdd.song, "durationFormat":(Math.floor(dur/60)+":"+
+    Math.floor(dur%60))});
+    songtoAdd.song.release();
   };
 
 

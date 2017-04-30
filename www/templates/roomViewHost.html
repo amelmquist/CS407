@@ -49,7 +49,8 @@
 
                 <div><h1>----Playlist----</h1>
                   <ul>
-                    <li ng-repeat="thisSong in musicQueue">{{thisSong.name}},{{thisSong.song.duration}}</li>
+                    <li ng-repeat="thisSong in musicQueue">{{thisSong.name}},
+                      {{thisSong.durationFormat}}</li>
                   </ul>
                 </div>
 
