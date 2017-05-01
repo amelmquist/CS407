@@ -47,16 +47,29 @@
             <h1>Debug: {{debug}}</h1>
 
             <br><br>
-            <div ng-if="currentSong">Now Playing: {{currentSong.name}}</div>
+            <div ng-if="currentSong"><h3>Now Playing: {{currentSong.name}}</h3></div>
             <!--<div ng-if="currentSong">timeRemaining: {{timeRemaining}}</div>-->
             <!--<button class="button" ng-click="addSongX()">Add Song X</button>
             <button class="button" ng-click="addSongY()">Add Song Y</button>-->
 
             <div><h1>----Playlist----</h1>
-              <ul>
-                <li ng-repeat="thisSong in musicQueue">{{thisSong.name}}</li>
-              </ul>
+              <!--<ul>-->
+              <!--<li ng-repeat="thisSong in musicQueue">{{thisSong.name}}</li>-->
+              <!--</ul>-->
+              <div ng-repeat="thisSong in musicQueue">
+                <ion-item>
+                  <div class="item-row">
+                    <span align="left"><h3>{{thisSong.name}}</h3></span>
+                    <span align="right">
+                      <img src="img/up-icon.png" style="width : 10% ; height : 10%" ng-click="songUp(thisSong)">
+                      <img src="img/down-icon.png" style="width : 10% ; height : 10%" ng-click="songDown(thisSong)">
+                      <img src="img/delete-icon.png" style="width : 10% ; height : 10%" ng-click="removeSong(thisSong)">
+                    </span>
+                  </div>
+                </ion-item>
+              </div>
             </div>
+
 
           </div>
         </ion-scroll>
@@ -78,21 +91,10 @@
           </div>
           <br>
           <div class="list">
-            <!--<div ng-repeat="file in files">-->
-            <!--<a class="item item-icon-left" ng-click="getDirectoryContents(file,file.nativeURL)"> &lt;!&ndash;href="#"&ndash;&gt;-->
-            <!--<i ng-show="file.isDirectory" class="icon ion-folder"></i>-->
-            <!--<i ng-show="file.isFile" class="icon ion-document"></i>-->
-            <!--{{file.name}}-->
-            <!--</a>-->
-            <!--</div>-->
             <ion-item class="item-text-wrap" ng-repeat="requestSong in musicLibrary"
                       ng-click="addSongtoQueue(requestSong)">
               {{requestSong.name}}
             </ion-item>
-
-            <!--<ul>-->
-            <!--<li ng-repeat="song in musicLibrary">{{song.name}}</li>-->
-            <!--</ul>-->
           </div>
         </ion-scroll>
       </div>
