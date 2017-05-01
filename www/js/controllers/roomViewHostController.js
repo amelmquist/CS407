@@ -2,6 +2,7 @@
  * Created by Steven on 3/5/2017.
  */
 
+/*
 starter.factory('Room', function () {
 
   return function (hostUserObject, roomName, roomPassword) {
@@ -56,21 +57,39 @@ starter.factory('Room', function () {
     }
 
     //TODO: Need to change host to guest view and the new host to host view instantaneously
-    /* this.changeHost = function(someUser) {
+     this.changeHost = function(someUser) {
      var userId = someUser;
      if (this.allUsersInRoom[userId] != null) {
      this.hostId = userId;
      }
-     };*/
+     };
   }
 });
+*/
+starter.factory('Room', function($firebaseArray, $firebaseObject) {
 
-starter.factory('Song', function () {
-  return function (name, duration) {
-    this.name = name;
-    this.duration = duration;
+  var fb = {};
+
+  var fburl = "https://jamfly-5effe.firebaseio.com/";
+
+  fb.initialize = function(roomID)
+  {
+    fb.roomID = roomID;
+    fb.roomRef = new Firebase(fburl).child("roomList").child(roomID);
+    fb.messages = $firebaseArray(fb.roomRef.child("messages"));
+    fb.roomData = $firebaseObject(fb.roomRef.child("roomData"));
+
+    fb.delete = function()
+    {
+      fb.roomRef.remove();
+    };
+
+    return fb;
+
   };
-})
+
+  return fb;
+});
 
 starter.factory("$fileFactory", function ($q) {
 
@@ -130,30 +149,78 @@ starter.factory("$fileFactory", function ($q) {
 
 starter.controller('roomViewHostController', function (Room, $rootScope, $scope, $state, $stateParams,
                                                        $ionicViewSwitcher, $interval, Song, $fileFactory,
-                                                       $ionicPlatform, $ionicSideMenuDelegate) {
+                                                       $ionicPlatform, $ionicSideMenuDelegate, $ionicPopup) {
   //room host control properties
   $scope.roomName = $stateParams.room_name;
   $scope.password = $stateParams.password;
   // $scope.hostName = $rootScope.currUser.name;
+  var fb = Room.initialize($scope.roomName);
+  $scope.messages = fb.messages;
+  $scope.roomData = fb.roomData;
+
+  $scope.roomData.$loaded().then(function() {
+    //Only overwrite values if the room is brand new
+    if($scope.roomData.roomName == null)
+    {
+      $scope.roomData.roomName = $scope.name + "'s Room";
+      $scope.roomData.numMessages = 0;
+      $scope.roomData.numUsers = "1";
+      $scope.roomData.$save();
+    }
+  });
+
+  $scope.addMessage = function() {
+
+    $ionicPopup.prompt({
+      title: 'New Message',
+      template: 'Type your message below!'
+    }).then(function(res) {
+      $scope.messages.$add({
+        "user": $rootScope.name,
+        "message": res
+      });
+      $scope.roomData.numMessages++;
+      $scope.roomData.$save();
+    });
+  };
+
+  $scope.removeMessage = function(message) {
+    $scope.messages.$remove(message);
+    $scope.roomData.numMessages--;
+    $scope.roomData.$save();
+  };
+
 
   //$scope.createRoom = function() {
   // var room = new Room($rootScope.currUser, $scope.roomName, $scope.password);
-  var room = new Room("USER X", $scope.roomName, $scope.password);
-  $scope.room = room;
-  $scope.numUsers = Object.keys($scope.room.allUsersInRoom).length;
+  //var room = new Room("USER X", $scope.roomName, $scope.password);
+  //$scope.room = room;
+  //$scope.numUsers = Object.keys($scope.room.allUsersInRoom).length;
 
-  console.log($rootScope);
-  console.log($scope);
+  //console.log($rootScope);
+  //console.log($scope);
 
-  if ($scope.room.quitRoom == true) {
-    $scope.closeRoom();
-  }
+  //if ($scope.room.quitRoom == true) {
+    //$scope.closeRoom();
+  //}
 
   $scope.closeRoom = function () {
-    //Todo, make this function ask for confirmation before closing the room
-    $scope.endMusic();
-    $ionicViewSwitcher.nextDirection('back');
-    $state.go('routingPage');
+    var confirmed = $ionicPopup.confirm({
+      title: 'Closing Room',
+      template: 'Are you sure you want to close the room?'
+    });
+
+    confirmed.then(function(res) {
+      if(res) {
+        $ionicPopup.alert({
+          title: 'Deleting Room'
+        });
+        $scope.endMusic();
+        fb.roomRef.remove();
+        $ionicViewSwitcher.nextDirection('back');
+        $state.go('routingPage');
+      }
+    });
   };
 
   $scope.changeOptions = function () {
@@ -161,9 +228,7 @@ starter.controller('roomViewHostController', function (Room, $rootScope, $scope,
   };
 
   $scope.viewUsers = function () {
-    $state.go('usersPage', {
-      'room': $scope.room,
-    });
+    $state.go('usersPage');
   };
 
   //music queue control mechanisms

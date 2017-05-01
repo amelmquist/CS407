@@ -21,8 +21,13 @@
   </ion-nav-buttons>
   <ion-side-menus>
     <!-- Center content -->
+    <button class="button button-icon ion-ios-chatboxes" ng-click="addMessage()"></button>
     <ion-pane ion-side-menu-content>
-
+      <ion-list>
+        <ion-item ng-repeat="message in messages" ng-click="removeMessage(message)">
+          {{message.user}} - {{message.message}}
+        </ion-item>
+      </ion-list>
 
       <ion-content class="padding" overflow-scroll="false">
 
