@@ -14,6 +14,7 @@ starter.factory('Room', function($firebaseArray, $firebaseObject) {
     fb.roomRef = new Firebase(fburl).child("roomList").child(roomID);
     fb.messages = $firebaseArray(fb.roomRef.child("messages"));
     fb.roomData = $firebaseObject(fb.roomRef.child("roomData"));
+    fb.library = $firebaseArray(fb.roomRef.child("library"));
 
     fb.delete = function()
     {
@@ -81,7 +82,7 @@ starter.factory("$fileFactory", function ($q) {
   };
   return File;
 
-})
+});
 
 starter.controller('roomViewHostController', function (Room, $rootScope, $scope, $state, $stateParams,
                                                        $ionicViewSwitcher, $interval, $fileFactory,
@@ -94,11 +95,13 @@ starter.controller('roomViewHostController', function (Room, $rootScope, $scope,
   if($scope.roomName == null)
   {
     if($rootScope.name != null) {
+      $scope.roomName = $rootScope.name + "'s Room";
       roomID = $rootScope.name;
     }
     else
     {
       roomID = "default";
+      $scope.roomName = "Unnamed Room";
     }
   }
   else {
@@ -109,6 +112,7 @@ starter.controller('roomViewHostController', function (Room, $rootScope, $scope,
 
   $scope.messages = fb.messages;
   $scope.roomData = fb.roomData;
+  $scope.onlineLibrary = fb.library;
 
   $scope.roomData.$loaded().then(function() {
     //Only overwrite values if the room is brand new
@@ -120,6 +124,14 @@ starter.controller('roomViewHostController', function (Room, $rootScope, $scope,
       $scope.roomData.$save();
     }
   });
+
+  var uploadLibraryToFirebase = function(){
+
+    for(var i = 0; i < $scope.musicLibrary.length; i++)
+    {
+      $scope.onlineLibrary.$add($scope.musicLibrary[i]);
+    }
+  };
 
   $scope.addMessage = function() {
 
@@ -141,20 +153,6 @@ starter.controller('roomViewHostController', function (Room, $rootScope, $scope,
     $scope.roomData.numMessages--;
     $scope.roomData.$save();
   };
-
-
-  //$scope.createRoom = function() {
-  // var room = new Room($rootScope.currUser, $scope.roomName, $scope.password);
-  //var room = new Room("USER X", $scope.roomName, $scope.password);
-  //$scope.room = room;
-  //$scope.numUsers = Object.keys($scope.room.allUsersInRoom).length;
-
-  //console.log($rootScope);
-  //console.log($scope);
-
-  //if ($scope.room.quitRoom == true) {
-    //$scope.closeRoom();
-  //}
 
   $scope.closeRoom = function () {
     var confirmed = $ionicPopup.confirm({
@@ -308,6 +306,7 @@ starter.controller('roomViewHostController', function (Room, $rootScope, $scope,
     fs.getEntriesAtRoot().then(function (result) {
       $scope.files = result;
       $scope.getAllFiles($scope.files);
+      //uploadLibraryToFirebase();
     }, function (error) {
       console.error(error);
     });
@@ -322,23 +321,9 @@ starter.controller('roomViewHostController', function (Room, $rootScope, $scope,
             // only add mp3 files
             var name = entries[i].name.split('.mp3')[0];
             var songPath = entries[i].nativeURL;
-            // var foundSong = new Media(entries[i].nativeURL,
-            //   // success callback
-            //   function () {
-            //     $scope.debug = "created media";
-            //   },
-            //   // error callback
-            //   function onError(err) {
-            //     $scope.debug = "media error";
-            //   },
-            //   function onStatus(status) {
-            //     $scope.$apply(function () {
-            //       $scope.updateQueue(status);
-            //       $scope.mediaStatus = "status: " + status;
-            //     })
-            //   }
-            // );
+
             $scope.musicLibrary.push({"name": name, "songPath": songPath});
+            $scope.onlineLibrary.$add({"name": name, "songPath": songPath});
           }
         }
         else {

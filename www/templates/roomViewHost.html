@@ -19,15 +19,10 @@
       {{numUsers}} User(s)
     </button>
   </ion-nav-buttons>
+
   <ion-side-menus>
     <!-- Center content -->
-    <button class="button button-icon ion-ios-chatboxes" ng-click="addMessage()"></button>
     <ion-pane ion-side-menu-content>
-      <ion-list>
-        <ion-item ng-repeat="message in messages" ng-click="removeMessage(message)">
-          {{message.user}} - {{message.message}}
-        </ion-item>
-      </ion-list>
 
       <ion-content class="padding" overflow-scroll="false">
 
@@ -37,30 +32,19 @@
         </div>
         <ion-scroll overflow-scroll="false" zooming="true" direction="y" style="width: 90%; height: 90%">
           <div style="width: 93%; height:90%; float:left;">
-            <!--<h1>{{hostName}}, you're hosting this room: {{roomName}}!</h1>-->
             <br><br>
 
 
             <img src="img/play-icon.png" style="width : 20% ; height : 20%" ng-click="play()">
             <img src="img/pause-icon.png" style="width : 20% ; height : 20%" ng-click="pause()">
             <img src="img/next-icon.png" style="width : 20% ; height : 20%" ng-click="next()">
-            <!--<button class="button" ng-click="play()"></button>-->
-            <!--<button class="button" ng-click="pause()">Pause</button>-->
-            <!--<button class="button" ng-click="next()">Next</button>-->
 
-            <!--<br><br>-->
             <h1>Debug: {{debug}}</h1>
 
             <br><br>
             <div ng-if="currentSong"><h3>Now Playing: {{currentSong.name}}</h3></div>
-            <!--<div ng-if="currentSong">timeRemaining: {{timeRemaining}}</div>-->
-            <!--<button class="button" ng-click="addSongX()">Add Song X</button>
-            <button class="button" ng-click="addSongY()">Add Song Y</button>-->
 
             <div><h1>----Playlist----</h1>
-              <!--<ul>-->
-              <!--<li ng-repeat="thisSong in musicQueue">{{thisSong.name}}</li>-->
-              <!--</ul>-->
               <div ng-repeat="thisSong in musicQueue">
                 <ion-item>
                   <div class="item-row">

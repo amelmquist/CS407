@@ -3,11 +3,12 @@
  */
 
 starter.controller('roomViewGuestController', function($scope, $rootScope, $state, $ionicViewSwitcher,
-                                                       $stateParams, $firebaseObject, $firebaseArray) {
+                                                       $stateParams, $ionicSideMenuDelegate, $firebaseObject, $firebaseArray) {
   var fburl = "https://jamfly-5effe.firebaseio.com/";
   var roomRef = new Firebase(fburl).child("roomList").child($stateParams.roomID);
   $scope.roomInfo = $firebaseObject(roomRef.child("roomData"));
   $scope.messages = $firebaseArray(roomRef.child("messages"));
+  $scope.library = $firebaseArray(roomRef.child("library"));
 
   $scope.roomInfo.$watch(function(event) {
     if($scope.roomInfo.roomName == null)
@@ -30,6 +31,15 @@ starter.controller('roomViewGuestController', function($scope, $rootScope, $stat
   $scope.leaveRoom = function() {
     $ionicViewSwitcher.nextDirection('back');
     $state.go('routingPage');
+  };
+
+  $scope.requestSong = function(song) {
+
+  }
+
+  // dealing with side menu
+  $scope.toggleMenu = function () {
+    $ionicSideMenuDelegate.toggleRight();
   };
 
 });
