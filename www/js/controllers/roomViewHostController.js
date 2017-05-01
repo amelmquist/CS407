@@ -15,6 +15,7 @@ starter.factory('Room', function($firebaseArray, $firebaseObject) {
     fb.messages = $firebaseArray(fb.roomRef.child("messages"));
     fb.roomData = $firebaseObject(fb.roomRef.child("roomData"));
     fb.library = $firebaseArray(fb.roomRef.child("library"));
+    fb.requestList = $firebaseArray(fb.roomRef.child("requests"));
 
     fb.delete = function()
     {
@@ -113,6 +114,14 @@ starter.controller('roomViewHostController', function (Room, $rootScope, $scope,
   $scope.messages = fb.messages;
   $scope.roomData = fb.roomData;
   $scope.onlineLibrary = fb.library;
+  $scope.requestList = fb.requestList;
+
+  //Always watch the request list, add new songs when they come in!
+  $scope.requestList.$watch(function(event) {
+    if(event.event == "child_added")
+      $scope.addSongtoQueue($scope.requestList.$getRecord(event.key));
+      $scope.requestList.$remove($scope.requestList.$getRecord(event.key));
+  });
 
   $scope.roomData.$loaded().then(function() {
     //Only overwrite values if the room is brand new
@@ -180,6 +189,7 @@ starter.controller('roomViewHostController', function (Room, $rootScope, $scope,
   $scope.viewUsers = function () {
     $state.go('usersPage');
   };
+
 
   //music queue control mechanisms
   $scope.musicQueue = [];
@@ -337,7 +347,7 @@ starter.controller('roomViewHostController', function (Room, $rootScope, $scope,
 
   $scope.addSongtoQueue = function (songtoAdd) {
     $scope.musicQueue.push({"name": songtoAdd.name, "songPath": songtoAdd.songPath});
-    songtoAdd.song.release();
+    //songtoAdd.song.release();
   };
 
   // dealing with side menu

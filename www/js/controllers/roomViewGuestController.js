@@ -9,6 +9,7 @@ starter.controller('roomViewGuestController', function($scope, $rootScope, $stat
   $scope.roomInfo = $firebaseObject(roomRef.child("roomData"));
   $scope.messages = $firebaseArray(roomRef.child("messages"));
   $scope.library = $firebaseArray(roomRef.child("library"));
+  $scope.requestList = $firebaseArray(roomRef.child("requests"));
 
   $scope.roomInfo.$watch(function(event) {
     if($scope.roomInfo.roomName == null)
@@ -34,8 +35,8 @@ starter.controller('roomViewGuestController', function($scope, $rootScope, $stat
   };
 
   $scope.requestSong = function(song) {
-
-  }
+    $scope.requestList.$add(song);
+  };
 
   // dealing with side menu
   $scope.toggleMenu = function () {
