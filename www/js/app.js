@@ -35,7 +35,7 @@ starter.config(function($stateProvider, $urlRouterProvider){
       url: '/roomViewHostURL',
       templateUrl: 'templates/roomViewHost.html',
       controller: 'roomViewHostController',
-      params: {room_name: null, password: null}
+      params: {'room_name': null, 'password': null}
     })
     .state('roomOptionsPage', {
       url: '/roomOptionsPageURL',
@@ -47,16 +47,6 @@ starter.config(function($stateProvider, $urlRouterProvider){
       templateUrl: 'templates/usersPage.html',
       controller: 'usersPageController',
       params: {room: null}
-    })
-    .state('firstPage', {
-      url: '/firstURL',
-      templateUrl: 'templates/firstPage.html',
-      controller: 'page1controller'
-    })
-    .state('secondPage', {
-      url: '/secondURL',
-      templateUrl: 'templates/secondPage.html',
-      controller: 'page2controller'
     });
   $urlRouterProvider.otherwise("/welcomeURL");
 });
