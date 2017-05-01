@@ -72,61 +72,61 @@ starter.factory('Song', function () {
   };
 })
 
-  .factory("$fileFactory", function ($q) {
+starter.factory("$fileFactory", function ($q) {
 
-    var File = function () {
-    };
-    File.prototype = {
+  var File = function () {
+  };
+  File.prototype = {
 
-      getParentDirectory: function (path) {
-        var deferred = $q.defer();
-        window.resolveLocalFileSystemURI(path, function (fileSystem) {
-          fileSystem.getParent(function (result) {
-            deferred.resolve(result);
-          }, function (error) {
-            deferred.reject(error);
-          });
+    getParentDirectory: function (path) {
+      var deferred = $q.defer();
+      window.resolveLocalFileSystemURI(path, function (fileSystem) {
+        fileSystem.getParent(function (result) {
+          deferred.resolve(result);
         }, function (error) {
           deferred.reject(error);
         });
-        return deferred.promise;
-      },
+      }, function (error) {
+        deferred.reject(error);
+      });
+      return deferred.promise;
+    },
 
-      getEntriesAtRoot: function () {
-        var deferred = $q.defer();
-        var homePath = cordova.file.externalRootDirectory;
-        var homePath = homePath + "/Music";
-        window.resolveLocalFileSystemURI(homePath, function (fileSystem) {
-          var directoryReader = fileSystem.createReader();
-          directoryReader.readEntries(function (entries) {
-            deferred.resolve(entries);
-          }, function (error) {
-            deferred.reject(error);
-          });
+    getEntriesAtRoot: function () {
+      var deferred = $q.defer();
+      var homePath = cordova.file.externalRootDirectory;
+      var homePath = homePath + "/Music";
+      window.resolveLocalFileSystemURI(homePath, function (fileSystem) {
+        var directoryReader = fileSystem.createReader();
+        directoryReader.readEntries(function (entries) {
+          deferred.resolve(entries);
         }, function (error) {
           deferred.reject(error);
         });
-        return deferred.promise;
-      },
+      }, function (error) {
+        deferred.reject(error);
+      });
+      return deferred.promise;
+    },
 
-      getEntries: function (path) {
-        var deferred = $q.defer();
-        window.resolveLocalFileSystemURI(path, function (fileSystem) {
-          var directoryReader = fileSystem.createReader();
-          directoryReader.readEntries(function (entries) {
-            deferred.resolve(entries);
-          }, function (error) {
-            deferred.reject(error);
-          });
+    getEntries: function (path) {
+      var deferred = $q.defer();
+      window.resolveLocalFileSystemURI(path, function (fileSystem) {
+        var directoryReader = fileSystem.createReader();
+        directoryReader.readEntries(function (entries) {
+          deferred.resolve(entries);
         }, function (error) {
           deferred.reject(error);
         });
-        return deferred.promise;
-      }
-    };
-    return File;
+      }, function (error) {
+        deferred.reject(error);
+      });
+      return deferred.promise;
+    }
+  };
+  return File;
 
-  })
+})
 
 starter.controller('roomViewHostController', function (Room, $rootScope, $scope, $state, $stateParams,
                                                        $ionicViewSwitcher, $interval, Song, $fileFactory,
@@ -134,10 +134,11 @@ starter.controller('roomViewHostController', function (Room, $rootScope, $scope,
   //room host control properties
   $scope.roomName = $stateParams.room_name;
   $scope.password = $stateParams.password;
-  $scope.hostName = $rootScope.currUser.name;
+  // $scope.hostName = $rootScope.currUser.name;
 
   //$scope.createRoom = function() {
-  var room = new Room($rootScope.currUser, $scope.roomName, $scope.password);
+  // var room = new Room($rootScope.currUser, $scope.roomName, $scope.password);
+  var room = new Room("USER X", $scope.roomName, $scope.password);
   $scope.room = room;
   $scope.numUsers = Object.keys($scope.room.allUsersInRoom).length;
 
@@ -199,26 +200,26 @@ starter.controller('roomViewHostController', function (Room, $rootScope, $scope,
   //   }
   // }
 
-  $scope.updateQueue = function(status){
-    switch (status){
+  $scope.updateQueue = function (status) {
+    switch (status) {
       case 0: //MEDIA_NONE
-        // $scope.debug = "MEDIA_NONE";
+              // $scope.debug = "MEDIA_NONE";
         break;
       case 1: //MEDIA_STARTING
-        // $scope.debug = "MEDIA_STARTING";
+              // $scope.debug = "MEDIA_STARTING";
         break;
       case 2: //MEDIA_RUNNING
-        // $scope.debug = "MEDIA_RUNNING";
+              // $scope.debug = "MEDIA_RUNNING";
         break;
       case 3: //MEDIA_PAUSED
-        // $scope.debug = "MEDIA_PAUSED";
+              // $scope.debug = "MEDIA_PAUSED";
         break;
       case 4: //MEDIA_STOPPED
-        // $scope.debug = "MEDIA_STOPPED";
+              // $scope.debug = "MEDIA_STOPPED";
         $scope.currentSong.song.release();
         $scope.hasCurrentSong = false;
         $scope.play();
-        // $scope.next();
+      // $scope.next();
       default:
     }
   }
@@ -248,27 +249,27 @@ starter.controller('roomViewHostController', function (Room, $rootScope, $scope,
   // };
 
   $scope.play = function () {
-    if($scope.hasCurrentSong){
+    if ($scope.hasCurrentSong) {
       $scope.currentSong.song.play();
-    }else if($scope.musicQueue.length>0){
-      $scope.currentSong = {"name":$scope.musicQueue[0].name,"song":$scope.musicQueue[0].song};
+    } else if ($scope.musicQueue.length > 0) {
+      $scope.currentSong = {"name": $scope.musicQueue[0].name, "song": $scope.musicQueue[0].song};
       $scope.musicQueue.shift();
       $scope.hasCurrentSong = true;
       $scope.currentSong.song.play();
       $scope.debug = $scope.currentSong.name;
-    }else{
+    } else {
       $scope.currentSong = "";
     }
   };
 
   $scope.pause = function () {
-    if($scope.hasCurrentSong){
+    if ($scope.hasCurrentSong) {
       $scope.currentSong.song.pause();
     }
   };
 
   $scope.next = function () {
-    if($scope.hasCurrentSong){
+    if ($scope.hasCurrentSong) {
       // $scope.currentSong.song.pause();
       $scope.currentSong.song.release();
       // $scope.hasCurrentSong = false;
@@ -336,7 +337,7 @@ starter.controller('roomViewHostController', function (Room, $rootScope, $scope,
                 $scope.debug = "media error";
               },
               function onStatus(status) {
-                $scope.$apply(function(){
+                $scope.$apply(function () {
                   $scope.updateQueue(status);
                   $scope.mediaStatus = "status: " + status;
                 })

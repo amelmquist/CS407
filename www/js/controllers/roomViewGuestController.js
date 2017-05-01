@@ -4,7 +4,7 @@
 
 starter.controller('roomViewGuestController', function($scope, $state, $ionicViewSwitcher,
                                                        $stateParams, $firebaseObject, $firebaseArray) {
-  var fburl = "https://jamfly-5effe.firebaseio.com/"
+  var fburl = "https://jamfly-5effe.firebaseio.com/";
   var roomRef = new Firebase(fburl).child("roomList").child($stateParams.roomID);
   $scope.roomInfo = $firebaseObject(roomRef.child("roomData"));
   $scope.messages = $firebaseArray(roomRef.child("messages"));
@@ -16,6 +16,7 @@ starter.controller('roomViewGuestController', function($scope, $state, $ionicVie
     $scope.roomInfo.numMessages++;
     $scope.roomInfo.$save();
     $scope.userMessage = "";
+
   };
 
   $scope.leaveRoom = function() {

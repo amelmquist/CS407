@@ -75,6 +75,7 @@ starter.run(function($ionicPlatform) {
       // a much nicer keyboard experience.
       cordova.plugins.Keyboard.disableScroll(true);
     }
+
     if(window.StatusBar) {
       StatusBar.styleDefault();
     }
