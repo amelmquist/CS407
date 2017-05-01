@@ -13,37 +13,22 @@
 
     <ion-content class="padding">
 
-      </br> </br> </br> </br> </br> </br> </br> </br> </br> </br> </br>
-
       <div align="center">
         <h1>Enter your room name and password</h1>
       </div>
 
-      </br> </br>
 
       <div align="center">
-        <div style="float: none; width: 25%;">
-          <label class="item item-input">
-            <input type="text" name="roomName" id="roomName-textarea"
-                   ng-model="$parent.roomName" placeholder="Enter Room Name">
-          </label>
-        </div>
+        <input type="text" class="text-center" style="width:100%" ng-model="$parent.roomName" placeholder="Enter Room Name">
       </div>
 
       <div align="center">
-        <div style="float: none; width: 25%;">
-          <label class="item item-input">
-            <input type="text" name="password" id="roomPassword-textarea"
-                   ng-model="$parent.password" placeholder="Enter Password">
-          </label>
-        </div>
+        <input type="text" class="text-center" style="width:100%" ng-model="$parent.password" placeholder="Enter Password">
       </div>
 
-      </br> </br>
 
       <div align = "center">
-        <button style="float: none; width:25%" class="button button-positive button-large" ng-click="createRoom()">Create Room
-        </button>
+        <button ion-button block style="width:90%" class="button button-positive button-large" ng-click="createRoom()">Create Room</button>
       </div>
 
     </ion-content>
