@@ -63,48 +63,30 @@
             </div>
             <div name="SongQueue" style="height:75%;width:100%">
               <ion-scroll overflow-scroll="false" zooming="false" direction="y" style="width: 100%; height: 100%">
-              <div style="height:100%;width:100%">
                 <div style="height:100%;width:100%">
-                  <h1 style="text-align: center;">----Playlist----</h1>
-
+                  <div style="height:100%;width:100%">
+                    <h1 style="text-align: center;">----Playlist----</h1>
                     <div ng-repeat="thisSong in songQueue" style="height:100%;width:100%">
                       <div class="row" style="border: 1px solid;height:15%;width:100%">
                         <div class="col-66" style="height:100%;width:66%;text-align: left">
                           <h4>{{thisSong.name}}</h4>
                         </div>
                         <div class="col-11" style="height:100%;width:11%">
-                          <!--<img src="img/up-icon.png" style="width : 100% ; height:100%" ng-click="songUp(thisSong)">-->
                           <button class="button button-icon icon ion-arrow-up-c" ng-click="songUp(thisSong)"
                                   style="height:100%; width:100%"></button>
                         </div>
                         <div class="col-11" style="height:100%;width:11%">
-                          <!--<img src="img/down-icon.png" style="width : 100% ; height:100%" ng-click="songDown(thisSong)">-->
                           <button class="button button-icon icon ion-arrow-down-c" ng-click="songDown(thisSong)"
                                   style="height:100%; width:100%"></button>
                         </div>
                         <div class="col-11" style="height:100%;width:11%;">
-                          <!--<img src="img/delete-icon.png" style="width : 100% ; height:100%" ng-click="removeSong(thisSong)">-->
                           <button class="button button-icon icon ion-android-delete" ng-click="removeSong(thisSong)"
                                   style="height:100%; width:100%"></button>
                         </div>
                       </div>
-
-
-
-                      <!--<ion-item>-->
-                        <!--<div class="item-row">-->
-                          <!--<span align="left"><h3>{{thisSong.name}}</h3></span>-->
-                          <!--<span align="right">-->
-                        <!--<img src="img/up-icon.png" style="width : 10% ; height : 10%" ng-click="songUp(thisSong)">-->
-                        <!--<img src="img/down-icon.png" style="width : 10% ; height : 10%" ng-click="songDown(thisSong)">-->
-                        <!--<img src="img/delete-icon.png" style="width : 10% ; height : 10%" ng-click="removeSong(thisSong)">-->
-                      <!--</span>-->
-                        <!--</div>-->
-                      <!--</ion-item>-->
                     </div>
-
+                  </div>
                 </div>
-              </div>
             </div>
             </ion-scroll>
           </div>
@@ -113,40 +95,7 @@
           </div>
         </div>
 
-        <!--<div style="width: 7%; height:95%; float:right" align="left">-->
-          <!--<img src="img/musicDir.png" style="width : 150% ; height : 52%" ng-click="toggleMenu()">-->
-          <!--&lt;!&ndash;<img src="img/musicDir.png" alt="" ng-click="toggleMenu()">&ndash;&gt;-->
-        <!--</div>-->
-        <!--<ion-scroll overflow-scroll="false" zooming="true" direction="y" style="width: 90%; height: 90%">-->
-          <!--<div style="width: 93%; height:90%; float:left;">-->
-            <!--<br><br>-->
-
-            <!--<img src="img/play-icon.png" style="width : 20% ; height : 20%" ng-click="play()">-->
-            <!--<img src="img/pause-icon.png" style="width : 20% ; height : 20%" ng-click="pause()">-->
-            <!--<img src="img/next-icon.png" style="width : 20% ; height : 20%" ng-click="next()">-->
-
-            <!--&lt;!&ndash;<h1>Debug: {{debug}}</h1>&ndash;&gt;-->
-
-            <!--<br><br>-->
-            <!--<div ><h3>Now Playing</h3></div>-->
-            <!--<div ng-if="currentSong">{{currentSong.name}}</h3></div>-->
-
-
-            <!--<div><h1>&#45;&#45;&#45;&#45;Playlist&#45;&#45;&#45;&#45;</h1>-->
-                <!--<div ng-repeat="thisSong in songQueue">-->
-                <!--<ion-item>-->
-                  <!--<div class="item-row">-->
-                    <!--<span align="left"><h3>{{thisSong.name}}</h3></span>-->
-                    <!--<span align="right">-->
-                      <!--<img src="img/up-icon.png" style="width : 10% ; height : 10%" ng-click="songUp(thisSong)">-->
-                      <!--<img src="img/down-icon.png" style="width : 10% ; height : 10%" ng-click="songDown(thisSong)">-->
-                      <!--<img src="img/delete-icon.png" style="width : 10% ; height : 10%" ng-click="removeSong(thisSong)">-->
-                    <!--</span>-->
-                  <!--</div>-->
-                <!--</ion-item>-->
-              <!--</div>-->
-            <!--</div>-->
-          </div>
+        </div>
         </ion-scroll>
       </ion-content>
 

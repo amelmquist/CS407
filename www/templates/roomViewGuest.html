@@ -2,58 +2,118 @@
 <html lang="en">
 <body>
 
-  <ion-view view-title="Room (Guest View)">
-    <ion-nav-buttons side="primary">
-      <button class="button" ng-click="leaveRoom()">
-        Leave Room
-      </button>
-    </ion-nav-buttons>
+<ion-view view-title="Room: {{roomInfo.roomName}}">
+  <ion-nav-buttons side="primary">
+    <button class="button" ng-click="leaveRoom()">
+      Leave Room
+    </button>
+  </ion-nav-buttons>
 
-    <ion-side-menus>
-      <!-- Center content -->
-      <button class="button button-icon ion-ios-chatboxes" ng-click="addMessage()"></button>
-      <ion-pane ion-side-menu-content>
+  <ion-side-menus>
+    <!-- Center content -->
+    <ion-pane ion-side-menu-content>
 
-        <ion-content class="padding" overflow-scroll="false">
-
-          <div style="width: 7%; height:95%; float:right" align="left">
-            <img src="img/musicDir.png" style="width : 150% ; height : 52%" ng-click="toggleMenu()">
+      <ion-content scroll="false">
+        <div class="row" style="height:93vh; width:100vw;">
+          <div class="col-90" style="">
+            <div name="SongPlaying" style="border: 3px solid;height:17%">
+              <div name="NowPlaying"
+                   style="display:table; height:50%; width:100%;text-align:center">
+                <span style="display:table-cell; vertical-align: middle">
+                  <h2>Now Playing</h2>
+                </span>
+              </div>
+              <div name="SongInfo" style="display:table; height:50%;width:100%;text-align:center;
+              white-space: nowrap;overflow: hidden;text-overflow: ellipsis">
+                <span style="display:table-cell; vertical-align: middle">
+                  <h4 style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis">{{roomInfo.nowPlaying}}</h4>
+                </span>
+              </div>
+              <!--<div name="SongControls" style=" height:40%">-->
+              <!--<div class="row" style="height:100%" align="center">-->
+              <!--<div class="col-20 col-offset-20" name="PlayButton" style="height:100%; width:10%">-->
+              <!--<div ng-show="!playing" style="border: 1px solid;height:100%; width:100%">-->
+              <!--<button class="button button-icon icon ion-play" ng-click="togglePlay()"-->
+              <!--style="height:100%; width:100%"></button>-->
+              <!--</div>-->
+              <!--<div ng-show="playing" style="border: 1px solid;height:100%; width:100%">-->
+              <!--<button class="button button-icon icon ion-pause" ng-click="togglePlay()"-->
+              <!--style="height:100%; width:100%"></button>-->
+              <!--</div>-->
+              <!--</div>-->
+              <!--<div class="col-20 col-offset-20" name="NextButton" style="border: 1px solid; height:100%; width:10%">-->
+              <!--<div style="height:100%; width:100%">-->
+              <!--<button class="button button-icon icon ion-arrow-right-a" ng-click="next()"-->
+              <!--style="height:100%; width:100%"></button>-->
+              <!--</div>-->
+              <!--</div>-->
+              <!--</div>-->
+              <!--</div>-->
+            </div>
+            <div name="SongQueue" style="height:83%;width:100%">
+              <ion-scroll overflow-scroll="false" zooming="false" direction="y" style="width: 100%; height: 100%">
+                <div style="height:100%;width:100%">
+                  <div style="height:100%;width:100%">
+                    <h1 style="text-align: center;">----Playlist----</h1>
+                    <div ng-repeat="thisSong in songQueue" style="height:100%;width:100%">
+                      <div class="row" style="border: 1px solid;height:15%;width:100%">
+                        <div class="col-66" style="height:100%;width:100%;text-align: left">
+                          <h4>{{thisSong.name}}</h4>
+                        </div>
+                        <!--<div class="col-11" style="height:100%;width:11%">-->
+                        <!--<button class="button button-icon icon ion-arrow-up-c" ng-click="songUp(thisSong)"-->
+                        <!--style="height:100%; width:100%"></button>-->
+                        <!--</div>-->
+                        <!--<div class="col-11" style="height:100%;width:11%">-->
+                        <!--<button class="button button-icon icon ion-arrow-down-c" ng-click="songDown(thisSong)"-->
+                        <!--style="height:100%; width:100%"></button>-->
+                        <!--</div>-->
+                        <!--<div class="col-11" style="height:100%;width:11%;">-->
+                        <!--<button class="button button-icon icon ion-android-delete" ng-click="removeSong(thisSong)"-->
+                        <!--style="height:100%; width:100%"></button>-->
+                        <!--</div>-->
+                      </div>
+                    </div>
+                  </div>
+                </div>
+            </div>
+            </ion-scroll>
           </div>
-          <h2>Welcome to {{roomInfo.roomName}}</h2>
-          <div>Now playing: {{roomInfo.nowPlaying}}</div>
+          <div name="MusicLib" class="col-10" style="display:table-cell; vertical-align:middle; text-align:center">
+            <img src="img/musicDir.png" style="width : 100% ; height : 100%" ng-click="toggleMenu()">
+          </div>
+        </div>
 
+        </div>
+        </ion-scroll>
+      </ion-content>
+
+
+    </ion-pane>
+
+    <!-- Right menu -->
+    <ion-side-menu side="right">
+      <div style="height:10%"></div>
+      <div style="height:90%">
+        <ion-scroll overflow-scroll="false" zooming="false" direction="y" style="width: 100%; height: 100%">
+          <br><br>
+          <div>
+            <h1 style="text-align: center;">Music Library</h1>
+          </div>
+          <br>
           <div class="list">
-            <ion-item class="item-text-wrap" ng-repeat="song in songQueue">
+            <ion-item class="item-text-wrap" ng-repeat="song in library"
+                      ng-click="requestSong(song)">
               {{song.name}}
             </ion-item>
           </div>
+        </ion-scroll>
+      </div>
+    </ion-side-menu>
+  </ion-side-menus>
+  <ion-content class="padding">
 
-        </ion-content>
-
-      </ion-pane>
-
-      <!-- Right menu -->
-      <ion-side-menu side="right">
-        <div style="height:10%"></div>
-        <div style="height:90%">
-          <ion-scroll overflow-scroll="false" zooming="false" direction="y" style="width: 100%; height: 100%">
-            <br><br>
-            <div>
-              <h1>Music Library</h1>
-            </div>
-            <br>
-            <div class="list">
-              <ion-item class="item-text-wrap" ng-repeat="song in library" ng-click="requestSong(song)">
-                {{song.name}}
-              </ion-item>
-            </div>
-          </ion-scroll>
-        </div>
-      </ion-side-menu>
-    </ion-side-menus>
-    <ion-content class="padding">
-
-    </ion-content>
-  </ion-view>
+  </ion-content>
+</ion-view>
 </body>
 </html>
