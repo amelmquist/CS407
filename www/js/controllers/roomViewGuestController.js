@@ -2,7 +2,7 @@
  * Created by Steven on 3/5/2017.
  */
 
-starter.controller('roomViewGuestController', function($scope, $rootScope, $state, $ionicLoading, $ionicViewSwitcher,
+starter.controller('roomViewGuestController', function($scope, $rootScope, $state, $ionicLoading, $ionicPopup, $ionicViewSwitcher,
                                                        $stateParams, $ionicSideMenuDelegate, $firebaseObject, $firebaseArray) {
   var fburl = "https://jamfly-5effe.firebaseio.com/";
   var roomRef = new Firebase(fburl).child("roomList").child($stateParams.roomID);
@@ -11,6 +11,7 @@ starter.controller('roomViewGuestController', function($scope, $rootScope, $stat
   $scope.library = $firebaseArray(roomRef.child("library"));
   $scope.songQueue = $firebaseArray(roomRef.child("songQueue"));
   $scope.requestList = $firebaseArray(roomRef.child("requests"));
+  $scope.usersList = $firebaseArray(roomRef.child("usersList"));
 
   $scope.roomInfo.$loaded().then(function() {
     $scope.roomInfo.numUsers++;
@@ -25,6 +26,28 @@ starter.controller('roomViewGuestController', function($scope, $rootScope, $stat
     }
   });
 
+  var userListKey = "";
+  $scope.usersList.$loaded().then(function() {
+    $scope.usersList.$add({"name": $rootScope.name, "hostBool": false}).then(function(ref) {
+      userListKey = ref.key();
+    });
+  });
+
+  $scope.showUserList = function(){
+    $ionicPopup.show({
+      template: '<ion-list>                                '+
+                '  <ion-item ng-repeat="user in usersList"> '+
+                '    {{user.name}}  <span ng-show="user.hostBool">[Host]</span>'+
+                '  </ion-item>                             '+
+                '</ion-list>                               ',
+      title: 'List',
+      scope: $scope,
+      buttons: [
+        { text: 'Close' },
+      ]
+    });
+  };
+
   $scope.userMessage = "";
   $scope.submitMessage = function()
   {
@@ -36,6 +59,7 @@ starter.controller('roomViewGuestController', function($scope, $rootScope, $stat
   };
 
   $scope.leaveRoom = function() {
+    $scope.usersList.$remove($scope.usersList.$getRecord(userListKey));
     $scope.roomInfo.$loaded().then(function() {
       $scope.roomInfo.numUsers--;
       $scope.roomInfo.$save();

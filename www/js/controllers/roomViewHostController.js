@@ -16,6 +16,7 @@ starter.factory('Room', function ($firebaseArray, $firebaseObject) {
     fb.roomData = $firebaseObject(fb.roomRef.child("roomData"));
     fb.library = $firebaseArray(fb.roomRef.child("library"));
     fb.requestList = $firebaseArray(fb.roomRef.child("requests"));
+    fb.usersList = $firebaseArray(fb.roomRef.child("usersList"));
 
     fb.delete = function () {
       fb.roomRef.remove();
@@ -113,6 +114,7 @@ starter.controller('roomViewHostController', function (Room, $rootScope, $scope,
   $scope.onlineLibrary = fb.library;
   $scope.requestList = fb.requestList;
   $scope.songQueue = fb.songQueue;
+  $scope.usersList = fb.usersList;
 
   //queueLength won't update automatically, need to watch for it!
   $scope.songQueue.$loaded(function (event) {
@@ -139,6 +141,32 @@ starter.controller('roomViewHostController', function (Room, $rootScope, $scope,
       $scope.roomData.$save();
     }
   });
+
+  $scope.usersList.$loaded().then(function() {
+    $scope.usersList.$add({"name": $rootScope.name, "hostBool": true});
+  });
+
+  $scope.usersList.$watch(function(event) {
+    if(event.event == "child_added") {
+      $ionicLoading.show({ template: $scope.usersList.$getRecord(event.key).name +
+                          " has joined!", noBackdrop: false, duration: 500 });
+    }
+  });
+
+  $scope.showUserList = function(){
+    $ionicPopup.show({
+      template: '<ion-list>                                '+
+                '  <ion-item ng-repeat="user in usersList"> '+
+                '    {{user.name}}  <span ng-show="user.hostBool">[Host]</span>'+
+                '  </ion-item>                             '+
+                '</ion-list>                               ',
+      title: 'List',
+      scope: $scope,
+      buttons: [
+        { text: 'Close' },
+      ]
+    });
+  };
 
   $scope.addMessage = function () {
 

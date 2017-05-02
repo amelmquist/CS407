@@ -41,12 +41,6 @@ starter.config(function($stateProvider, $urlRouterProvider){
       url: '/roomOptionsPageURL',
       templateUrl: 'templates/roomOptionsPage.html',
       controller: 'roomOptionsPageController'
-    })
-    .state('usersPage', {
-      url: '/usersPageURL',
-      templateUrl: 'templates/usersPage.html',
-      controller: 'usersPageController',
-      params: {room: null}
     });
   $urlRouterProvider.otherwise("/welcomeURL");
 });

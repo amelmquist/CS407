@@ -9,6 +9,12 @@
     </button>
   </ion-nav-buttons>
 
+  <ion-nav-buttons side="secondary">
+    <button class="button" ng-click="showUserList()">
+      {{roomInfo.numUsers}} User(s)
+    </button>
+  </ion-nav-buttons>
+
   <ion-side-menus>
     <!-- Center content -->
     <ion-pane ion-side-menu-content>
