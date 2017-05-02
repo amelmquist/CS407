@@ -2,42 +2,24 @@
 <html>
 <body>
 
-  <ion-view view-title="Page 1" hide-nav-bar="true">
-    <ion-content class="padding">
+<ion-view view-title="Page 1" hide-nav-bar="true">
+  <ion-content class="padding">
 
-      <!--
-      <div class="row row-center">
-        <div class="col col-center">
-          <h1>Welcome to jamFly!</h1>
-        </div>
+    <div class="row">
+      <div class="col" style="text-align:center">
+        <h1>Welcome to jamFly!</h1>
+        <img src="img/jamFlyLogo.png" style="width:80vw">
+        <form name="form" ng-submit="goToNext()">
+          <input required style="width:100%;text-align: center" type="text" ng-model="$parent.nameBox"
+                 ng-submit="goToNext()" placeholder="enter your name"><br>
+          <br>
+          <button ion-button block type="submit" ng-disabled="form.$invalid" style="width:90vw"
+                  class="button button-positive button-large" ng-click="goToNext()">Enter App
+          </button>
+        </form>
       </div>
-      <div class="row row-center">
-        <div class="col col-center">
-          <img src="img/jamFlyLogo.png" style="width:80%">
-        </div>
-      </div>
-      <div class="row row-center">
-        <div class="col col-center">
-          <form name="form" ng-submit="goToNext()">
-            <input required class="text-center" style="width:100%" type="text" ng-model="$parent.nameBox"
-                   ng-submit="goToNext()" placeholder="enter your name" pattern="^\w+$"><br>
-            <div ng-show="form.$invalid">Name must be a single word.</div><br>
-            <button ion-button block type="submit" ng-disabled="form.$invalid" style="width:90%"
-                    class="button button-positive button-large" ng-click="goToNext()">Enter App</button>
-          </form>
-        </div>
-      </div>
-      -->
-          <h1>Welcome to jamFly!</h1>
-          <img src="img/jamFlyLogo.png" style="width:80vw">
-          <form name="form" ng-submit="goToNext()">
-            <input required class="text-center" style="width:100vw" type="text" ng-model="$parent.nameBox"
-                   ng-submit="goToNext()" placeholder="enter your name" pattern="^\w+$"><br>
-            <div ng-show="form.$invalid">Name must be a single word.</div><br>
-            <button ion-button block type="submit" ng-disabled="form.$invalid" style="width:90vw"
-                    class="button button-positive button-large" ng-click="goToNext()">Enter App</button>
-          </form>
-    </ion-content>
-  </ion-view>
+    </div>
+  </ion-content>
+</ion-view>
 </body>
 </html>
