@@ -208,7 +208,7 @@ starter.controller('roomViewHostController', function (Room, $rootScope, $scope,
       case 1: //MEDIA_STARTING
               // $scope.debug = "MEDIA_STARTING";
         $scope.mediaStatus = status;
-        $scope.playing = true;
+        $scope.playing = false;
         break;
       case 2: //MEDIA_RUNNING
               // $scope.debug = "MEDIA_RUNNING";
@@ -295,9 +295,10 @@ starter.controller('roomViewHostController', function (Room, $rootScope, $scope,
     if ($scope.hasCurrentSong) {
       // $scope.currentSong.song.pause();
       $scope.currentSong.song.release();
+      $scope.playing = false;
       //$scope.songQueue.$remove(nextSongKey);
       // $scope.hasCurrentSong = false;
-      $scope.debug = "removed current song";
+      // $scope.debug = "removed current song";
     }
   };
 
@@ -342,12 +343,6 @@ starter.controller('roomViewHostController', function (Room, $rootScope, $scope,
   var fs = new $fileFactory();
   // $scope.debug = "location 1: Debug started";
   $ionicPlatform.ready(function () {
-    // $scope.debug = "location 1.5";
-    cordova.plugins.diagnostic.requestExternalStorageAuthorization(function (status) {
-      // $scope.perms = "Authorization: " + (status == cordova.plugins.diagnostic.permissionStatus.GRANTED ? "granted" : "denied");
-    }, function (error) {
-      // $scope.perms = error;
-    });
 
     //Get the root music directory - found in sdcard/Music (externalRootStorage()/Music)
     fs.getEntriesAtRoot().then(function (result) {
