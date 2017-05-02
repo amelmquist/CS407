@@ -18,7 +18,7 @@
     <div align="center" ng-show="loadingRooms">Loading Rooms...</div>
     <ion-list>
       <ion-item ng-repeat="room in availableRooms" ng-click="joinRoom(room)">
-        Room: {{room.roomData.roomName}} Messages: ({{room.roomData.numMessages}})
+        Room: {{room.roomData.roomName}} Users: ({{room.roomData.numUsers}})
       </ion-item>
     </ion-list>
   </ion-content>

@@ -84,7 +84,7 @@ starter.factory("$fileFactory", function ($q) {
 
 });
 
-starter.controller('roomViewHostController', function (Room, $rootScope, $scope, $state, $stateParams,
+starter.controller('roomViewHostController', function (Room, $rootScope, $scope, $state, $stateParams, $ionicLoading,
                                                        $ionicViewSwitcher, $interval, $fileFactory,
                                                        $ionicPlatform, $ionicSideMenuDelegate, $ionicPopup) {
   //room host control properties
@@ -378,6 +378,7 @@ starter.controller('roomViewHostController', function (Room, $rootScope, $scope,
   });
 
   $scope.addSongtoQueue = function (songtoAdd) {
+    $ionicLoading.show({ template: "Song Added!", noBackdrop: false, duration: 500 });
     //$scope.musicQueue.push({"name": songtoAdd.name, "songPath": songtoAdd.songPath});
     $scope.songQueue.$add({"name": songtoAdd.name, "songPath": songtoAdd.songPath});
     //songtoAdd.song.release();
