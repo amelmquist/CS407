@@ -2,14 +2,13 @@
  * Created by Steven on 3/5/2017.
  */
 
-starter.factory('Room', function($firebaseArray, $firebaseObject) {
+starter.factory('Room', function ($firebaseArray, $firebaseObject) {
 
   var fb = {};
 
   var fburl = "https://jamfly-5effe.firebaseio.com/";
 
-  fb.initialize = function(roomID)
-  {
+  fb.initialize = function (roomID) {
     fb.roomID = roomID;
     fb.roomRef = new Firebase(fburl).child("roomList").child(roomID);
     fb.messages = $firebaseArray(fb.roomRef.child("messages"));
@@ -18,8 +17,7 @@ starter.factory('Room', function($firebaseArray, $firebaseObject) {
     fb.library = $firebaseArray(fb.roomRef.child("library"));
     fb.requestList = $firebaseArray(fb.roomRef.child("requests"));
 
-    fb.delete = function()
-    {
+    fb.delete = function () {
       fb.roomRef.remove();
     };
 
@@ -94,14 +92,12 @@ starter.controller('roomViewHostController', function (Room, $rootScope, $scope,
   $scope.password = $stateParams.password;
   // $scope.hostName = $rootScope.currUser.name;
   var roomID = "";
-  if($scope.roomName == null)
-  {
-    if($rootScope.name != null) {
+  if ($scope.roomName == null) {
+    if ($rootScope.name != null) {
       $scope.roomName = $rootScope.name + "'s Room";
       roomID = $rootScope.name;
     }
-    else
-    {
+    else {
       roomID = "default";
       $scope.roomName = "Unnamed Room";
     }
@@ -119,24 +115,23 @@ starter.controller('roomViewHostController', function (Room, $rootScope, $scope,
   $scope.songQueue = fb.songQueue;
 
   //queueLength won't update automatically, need to watch for it!
-  $scope.songQueue.$loaded(function(event) {
+  $scope.songQueue.$loaded(function (event) {
     $scope.queueLength = $scope.songQueue.length;
   });
-  $scope.songQueue.$watch(function(event) {
+  $scope.songQueue.$watch(function (event) {
     $scope.queueLength = $scope.songQueue.length;
   });
 
   //Always watch the request list, add new songs when they come in!
-  $scope.requestList.$watch(function(event) {
-    if(event.event == "child_added")
+  $scope.requestList.$watch(function (event) {
+    if (event.event == "child_added")
       $scope.addSongtoQueue($scope.requestList.$getRecord(event.key));
-      $scope.requestList.$remove($scope.requestList.$getRecord(event.key));
+    $scope.requestList.$remove($scope.requestList.$getRecord(event.key));
   });
 
-  $scope.roomData.$loaded().then(function() {
+  $scope.roomData.$loaded().then(function () {
     //Only overwrite values if the room is brand new
-    if($scope.roomData.roomName == null)
-    {
+    if ($scope.roomData.roomName == null) {
       $scope.roomData.roomName = $scope.roomName;
       $scope.roomData.numMessages = 0;
       $scope.roomData.nowPlaying = "";
@@ -145,12 +140,12 @@ starter.controller('roomViewHostController', function (Room, $rootScope, $scope,
     }
   });
 
-  $scope.addMessage = function() {
+  $scope.addMessage = function () {
 
     $ionicPopup.prompt({
       title: 'New Message',
       template: 'Type your message below!'
-    }).then(function(res) {
+    }).then(function (res) {
       $scope.messages.$add({
         "user": $rootScope.name,
         "message": res
@@ -160,7 +155,7 @@ starter.controller('roomViewHostController', function (Room, $rootScope, $scope,
     });
   };
 
-  $scope.removeMessage = function(message) {
+  $scope.removeMessage = function (message) {
     $scope.messages.$remove(message);
     $scope.roomData.numMessages--;
     $scope.roomData.$save();
@@ -172,8 +167,8 @@ starter.controller('roomViewHostController', function (Room, $rootScope, $scope,
       template: 'Are you sure you want to close the room?'
     });
 
-    confirmed.then(function(res) {
-      if(res) {
+    confirmed.then(function (res) {
+      if (res) {
         $ionicPopup.alert({
           title: 'Deleting Room'
         });
@@ -206,19 +201,29 @@ starter.controller('roomViewHostController', function (Room, $rootScope, $scope,
   $scope.updateQueue = function (status) {
     switch (status) {
       case 0: //MEDIA_NONE
-        // $scope.debug = "MEDIA_NONE";
+              // $scope.debug = "MEDIA_NONE";
+        $scope.mediaStatus = status;
+        $scope.playing = false;
         break;
       case 1: //MEDIA_STARTING
-        // $scope.debug = "MEDIA_STARTING";
+              // $scope.debug = "MEDIA_STARTING";
+        $scope.mediaStatus = status;
+        $scope.playing = true;
         break;
       case 2: //MEDIA_RUNNING
-        // $scope.debug = "MEDIA_RUNNING";
+              // $scope.debug = "MEDIA_RUNNING";
+        $scope.mediaStatus = status;
+        $scope.playing = true;
         break;
       case 3: //MEDIA_PAUSED
-        // $scope.debug = "MEDIA_PAUSED";
+              // $scope.debug = "MEDIA_PAUSED";
+        $scope.mediaStatus = status;
+        $scope.playing = false;
         break;
       case 4: //MEDIA_STOPPED
-        // $scope.debug = "MEDIA_STOPPED";
+              // $scope.debug = "MEDIA_STOPPED";
+        $scope.mediaStatus = status;
+        $scope.playing = false;
         $scope.currentSong.song.release();
         $scope.hasCurrentSong = false;
         $scope.play();
@@ -226,13 +231,21 @@ starter.controller('roomViewHostController', function (Room, $rootScope, $scope,
     }
   };
 
-  $scope.play = function ()
-  {
+  $scope.playing = false;
+  $scope.togglePlay = function(){
+    if($scope.playing == false){
+      $scope.play();
+    }else{
+      $scope.pause();
+    }
+
+  };
+
+  $scope.play = function () {
     if ($scope.hasCurrentSong) {
       $scope.currentSong.song.play();
-    //} else if ($scope.musicQueue.length > 0)
-      } else if ($scope.queueLength > 0)
-    {
+      //} else if ($scope.musicQueue.length > 0)
+    } else if ($scope.queueLength > 0) {
       //var nextSong = new Media($scope.musicQueue[0].songPath,
       var nextSongKey = $scope.songQueue.$keyAt(0);
       var nextSong = new Media($scope.songQueue.$getRecord(nextSongKey).songPath,
@@ -295,33 +308,33 @@ starter.controller('roomViewHostController', function (Room, $rootScope, $scope,
     }
   };
 
-  $scope.songUp = function(argSong){
+  $scope.songUp = function (argSong) {
     var index = $scope.songQueue.$indexFor($scope.songQueue.$keyAt(argSong));
-    if(index > 0){
-      var tempName = $scope.songQueue[index-1].name;
-      var tempPath = $scope.songQueue[index-1].songPath;
-      $scope.songQueue[index-1].name = $scope.songQueue[index].name;
-      $scope.songQueue[index-1].songPath = $scope.songQueue[index].songPath;
+    if (index > 0) {
+      var tempName = $scope.songQueue[index - 1].name;
+      var tempPath = $scope.songQueue[index - 1].songPath;
+      $scope.songQueue[index - 1].name = $scope.songQueue[index].name;
+      $scope.songQueue[index - 1].songPath = $scope.songQueue[index].songPath;
       $scope.songQueue[index].name = tempName;
       $scope.songQueue[index].songPath = tempPath;
       $scope.songQueue.$save(index);
-      $scope.songQueue.$save(index-1);
+      $scope.songQueue.$save(index - 1);
     }
   };
-  $scope.songDown = function(argSong){
+  $scope.songDown = function (argSong) {
     var index = $scope.songQueue.$indexFor($scope.songQueue.$keyAt(argSong));
-    if($scope.songQueue.$keyAt(index+1) != null){
-      var tempName = $scope.songQueue[index+1].name;
-      var tempPath = $scope.songQueue[index+1].songPath;
-      $scope.songQueue[index+1].name = $scope.songQueue[index].name;
-      $scope.songQueue[index+1].songPath = $scope.songQueue[index].songPath;
+    if ($scope.songQueue.$keyAt(index + 1) != null) {
+      var tempName = $scope.songQueue[index + 1].name;
+      var tempPath = $scope.songQueue[index + 1].songPath;
+      $scope.songQueue[index + 1].name = $scope.songQueue[index].name;
+      $scope.songQueue[index + 1].songPath = $scope.songQueue[index].songPath;
       $scope.songQueue[index].name = tempName;
       $scope.songQueue[index].songPath = tempPath;
       $scope.songQueue.$save(index);
-      $scope.songQueue.$save(index+1);
+      $scope.songQueue.$save(index + 1);
     }
   };
-  $scope.removeSong = function(argSong){
+  $scope.removeSong = function (argSong) {
     $scope.songQueue.$remove(argSong);
   };
 
