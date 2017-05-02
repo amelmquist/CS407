@@ -9,6 +9,7 @@ starter.controller('roomViewGuestController', function($scope, $rootScope, $stat
   $scope.roomInfo = $firebaseObject(roomRef.child("roomData"));
   $scope.messages = $firebaseArray(roomRef.child("messages"));
   $scope.library = $firebaseArray(roomRef.child("library"));
+  $scope.songQueue = $firebaseArray(roomRef.child("songQueue"));
   $scope.requestList = $firebaseArray(roomRef.child("requests"));
 
   $scope.roomInfo.$watch(function(event) {

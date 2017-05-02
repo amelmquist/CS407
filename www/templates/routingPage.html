@@ -21,15 +21,14 @@
         Room: {{room.roomData.roomName}} Messages: ({{room.roomData.numMessages}})
       </ion-item>
     </ion-list>
-
-    <br>
-
-    <div align = "center">
-        <button ion-button block style="width:90%" class="button button-positive button-large" ng-click="createRoom()">Create your own room!</button>
-    </div>
-
-
   </ion-content>
+
+  <ion-footer-bar>
+    <div class="bar bar-footer bar-positive footer-buttons">
+      <button ion-button block style="width:100%; font-size:150%" class="button button-positive" ng-click="createRoom()">Create your own room!</button>
+    </div>
+  </ion-footer-bar>
+
 </ion-view>
 </body>
 

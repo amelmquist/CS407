@@ -22,6 +22,12 @@
           <h2>Welcome to {{roomInfo.roomName}}</h2>
           <div>Now playing: {{roomInfo.nowPlaying}}</div>
 
+          <div class="list">
+            <ion-item class="item-text-wrap" ng-repeat="song in songQueue">
+              {{song.name}}
+            </ion-item>
+          </div>
+
         </ion-content>
 
       </ion-pane>
