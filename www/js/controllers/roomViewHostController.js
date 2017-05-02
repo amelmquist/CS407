@@ -13,6 +13,7 @@ starter.factory('Room', function($firebaseArray, $firebaseObject) {
     fb.roomID = roomID;
     fb.roomRef = new Firebase(fburl).child("roomList").child(roomID);
     fb.messages = $firebaseArray(fb.roomRef.child("messages"));
+    fb.songQueue = $firebaseArray(fb.roomRef.child("songQueue"));
     fb.roomData = $firebaseObject(fb.roomRef.child("roomData"));
     fb.library = $firebaseArray(fb.roomRef.child("library"));
     fb.requestList = $firebaseArray(fb.roomRef.child("requests"));
@@ -115,6 +116,15 @@ starter.controller('roomViewHostController', function (Room, $rootScope, $scope,
   $scope.roomData = fb.roomData;
   $scope.onlineLibrary = fb.library;
   $scope.requestList = fb.requestList;
+  $scope.songQueue = fb.songQueue;
+
+  //queueLength won't update automatically, need to watch for it!
+  $scope.songQueue.$loaded(function(event) {
+    $scope.queueLength = $scope.songQueue.length;
+  });
+  $scope.songQueue.$watch(function(event) {
+    $scope.queueLength = $scope.songQueue.length;
+  });
 
   //Always watch the request list, add new songs when they come in!
   $scope.requestList.$watch(function(event) {
@@ -129,18 +139,11 @@ starter.controller('roomViewHostController', function (Room, $rootScope, $scope,
     {
       $scope.roomData.roomName = $scope.roomName;
       $scope.roomData.numMessages = 0;
+      $scope.roomData.nowPlaying = "";
       $scope.roomData.numUsers = "1";
       $scope.roomData.$save();
     }
   });
-
-  var uploadLibraryToFirebase = function(){
-
-    for(var i = 0; i < $scope.musicLibrary.length; i++)
-    {
-      $scope.onlineLibrary.$add($scope.musicLibrary[i]);
-    }
-  };
 
   $scope.addMessage = function() {
 
@@ -223,11 +226,16 @@ starter.controller('roomViewHostController', function (Room, $rootScope, $scope,
     }
   };
 
-  $scope.play = function () {
+  $scope.play = function ()
+  {
     if ($scope.hasCurrentSong) {
       $scope.currentSong.song.play();
-    } else if ($scope.musicQueue.length > 0) {
-      var nextSong = new Media($scope.musicQueue[0].songPath,
+    //} else if ($scope.musicQueue.length > 0)
+      } else if ($scope.queueLength > 0)
+    {
+      //var nextSong = new Media($scope.musicQueue[0].songPath,
+      var nextSongKey = $scope.songQueue.$keyAt(0);
+      var nextSong = new Media($scope.songQueue.$getRecord(nextSongKey).songPath,
         // success callback
         function () {
           $scope.debug = "created media";
@@ -244,16 +252,23 @@ starter.controller('roomViewHostController', function (Room, $rootScope, $scope,
         }
       );
       $scope.currentSong = {
-        "name": $scope.musicQueue[0].name,
-        "songPath": $scope.musicQueue[0].songPath,
+        //"name": $scope.musicQueue[0].name,
+        "name": $scope.songQueue.$getRecord(nextSongKey).name,
+        //"songPath": $scope.musicQueue[0].songPath,
+        "songPath": $scope.songQueue.$getRecord(nextSongKey).songPath,
         "song": nextSong
       };
-      $scope.musicQueue.shift();
+      //$scope.musicQueue.shift();
+      $scope.songQueue.$remove($scope.songQueue.$indexFor(nextSongKey));
       $scope.hasCurrentSong = true;
       $scope.currentSong.song.play();
       $scope.debug = $scope.currentSong.name;
+      $scope.roomData.nowPlaying = $scope.currentSong.name;
+      $scope.roomData.$save();
     } else {
       $scope.currentSong = "";
+      $scope.roomData.nowPlaying = "";
+      $scope.roomData.$save();
     }
   };
 
@@ -267,41 +282,50 @@ starter.controller('roomViewHostController', function (Room, $rootScope, $scope,
     if ($scope.hasCurrentSong) {
       // $scope.currentSong.song.pause();
       $scope.currentSong.song.release();
+      //$scope.songQueue.$remove(nextSongKey);
       // $scope.hasCurrentSong = false;
       $scope.debug = "removed current song";
     }
   };
 
   $scope.endMusic = function () {
-    $scope.musicQueue = "";
+    //$scope.musicQueue = "";
     if ($scope.hasCurrentSong) {
       $scope.currentSong.song.release();
     }
   };
 
   $scope.songUp = function(argSong){
-    var index = $scope.musicQueue.indexOf(argSong);
+    var index = $scope.songQueue.$indexFor($scope.songQueue.$keyAt(argSong));
     if(index > 0){
-      var temp = $scope.musicQueue[index-1];
-      $scope.musicQueue[index-1] = $scope.musicQueue[index];
-      $scope.musicQueue[index] = temp;
+      var tempName = $scope.songQueue[index-1].name;
+      var tempPath = $scope.songQueue[index-1].songPath;
+      $scope.songQueue[index-1].name = $scope.songQueue[index].name;
+      $scope.songQueue[index-1].songPath = $scope.songQueue[index].songPath;
+      $scope.songQueue[index].name = tempName;
+      $scope.songQueue[index].songPath = tempPath;
+      $scope.songQueue.$save(index);
+      $scope.songQueue.$save(index-1);
     }
   };
   $scope.songDown = function(argSong){
-    var index = $scope.musicQueue.indexOf(argSong);
-    if(index < $scope.musicQueue.length-1){
-      var temp = $scope.musicQueue[index+1];
-      $scope.musicQueue[index+1] = $scope.musicQueue[index];
-      $scope.musicQueue[index] = temp;
+    var index = $scope.songQueue.$indexFor($scope.songQueue.$keyAt(argSong));
+    if($scope.songQueue.$keyAt(index+1) != null){
+      var tempName = $scope.songQueue[index+1].name;
+      var tempPath = $scope.songQueue[index+1].songPath;
+      $scope.songQueue[index+1].name = $scope.songQueue[index].name;
+      $scope.songQueue[index+1].songPath = $scope.songQueue[index].songPath;
+      $scope.songQueue[index].name = tempName;
+      $scope.songQueue[index].songPath = tempPath;
+      $scope.songQueue.$save(index);
+      $scope.songQueue.$save(index+1);
     }
   };
   $scope.removeSong = function(argSong){
-    var index = $scope.musicQueue.indexOf(argSong);
-    $scope.musicQueue.splice(index,1);
+    $scope.songQueue.$remove(argSong);
   };
 
   //logic for file management
-  $scope.musicLibrary = [];
   var fs = new $fileFactory();
   // $scope.debug = "location 1: Debug started";
   $ionicPlatform.ready(function () {
@@ -332,7 +356,7 @@ starter.controller('roomViewHostController', function (Room, $rootScope, $scope,
             var name = entries[i].name.split('.mp3')[0];
             var songPath = entries[i].nativeURL;
 
-            $scope.musicLibrary.push({"name": name, "songPath": songPath});
+            //$scope.musicLibrary.push({"name": name, "songPath": songPath});
             $scope.onlineLibrary.$add({"name": name, "songPath": songPath});
           }
         }
@@ -346,7 +370,8 @@ starter.controller('roomViewHostController', function (Room, $rootScope, $scope,
   });
 
   $scope.addSongtoQueue = function (songtoAdd) {
-    $scope.musicQueue.push({"name": songtoAdd.name, "songPath": songtoAdd.songPath});
+    //$scope.musicQueue.push({"name": songtoAdd.name, "songPath": songtoAdd.songPath});
+    $scope.songQueue.$add({"name": songtoAdd.name, "songPath": songtoAdd.songPath});
     //songtoAdd.song.release();
   };
 

@@ -45,7 +45,8 @@
             <div ng-if="currentSong"><h3>Now Playing: {{currentSong.name}}</h3></div>
 
             <div><h1>----Playlist----</h1>
-              <div ng-repeat="thisSong in musicQueue">
+              <!--<div ng-repeat="thisSong in musicQueue">-->
+                <div ng-repeat="thisSong in songQueue">
                 <ion-item>
                   <div class="item-row">
                     <span align="left"><h3>{{thisSong.name}}</h3></span>
@@ -80,7 +81,7 @@
           </div>
           <br>
           <div class="list">
-            <ion-item class="item-text-wrap" ng-repeat="requestSong in musicLibrary"
+            <ion-item class="item-text-wrap" ng-repeat="requestSong in onlineLibrary"
                       ng-click="addSongtoQueue(requestSong)">
               {{requestSong.name}}
             </ion-item>
