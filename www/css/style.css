@@ -28,3 +28,9 @@
 .bar-footer.footer-buttons .row .col{
   text-align: center;
 }
+
+.ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

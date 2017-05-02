@@ -29,18 +29,17 @@
           <div class="col-90" style="">
             <div name="SongPlaying" style="border: 3px solid;height:25%">
               <div name="NowPlaying"
-                   style="display:table; height:30%; width:100%;text-align:center">
+                   style="display:table; height:25%; width:100%;text-align:center">
                 <span style="display:table-cell; vertical-align: middle">
                   <h2>Now Playing</h2>
                 </span>
               </div>
-              <div name="SongInfo" style="display:table; height:30%;width:100%;text-align:center;
-              white-space: nowrap;overflow: hidden;text-overflow: ellipsis">
-                <span style="display:table-cell; vertical-align: middle">
-                  <h4 style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis">{{currentSong.name}}</h4>
-                </span>
+              <div name="SongInfo" style="height:25%;width:100%;text-align:center">
+                <!--<span style="display:table-cell; vertical-align: middle">-->
+                  <h4 class='ellipsis'>{{currentSong.name}}</h4>
+                <!--</span>-->
               </div>
-              <div name="SongControls" style=" height:40%">
+              <div name="SongControls" style=" height:35%">
                 <div class="row" style="height:100%" align="center">
                   <div class="col-20 col-offset-20" name="PlayButton" style="height:100%; width:10%">
                     <div ng-show="!playing" style="border: 1px solid;height:100%; width:100%">
@@ -69,7 +68,7 @@
                     <div ng-repeat="thisSong in songQueue" style="height:100%;width:100%">
                       <div class="row" style="border: 1px solid;height:15%;width:100%">
                         <div class="col-66" style="height:100%;width:66%;text-align: left">
-                          <h4>{{thisSong.name}}</h4>
+                          <h4 class='ellipsis'>{{thisSong.name}}</h4>
                         </div>
                         <div class="col-11" style="height:100%;width:11%">
                           <button class="button button-icon icon ion-arrow-up-c" ng-click="songUp(thisSong)"
