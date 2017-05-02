@@ -3,43 +3,31 @@
 
 <body>
 
-  <ion-view view-title="Creating Room">
+<ion-view view-title="Creating Room">
 
-    <ion-nav-buttons side="primary">
-      <button class="button" ng-click="cancelAndGoBackToRouting()">
-       Cancel
-      </button>
-    </ion-nav-buttons>
+  <ion-nav-buttons side="primary">
+    <button class="button" ng-click="cancelAndGoBackToRouting()">
+      Cancel
+    </button>
+  </ion-nav-buttons>
 
-    <ion-content class="padding">
+  <ion-content class="padding">
 
+    <div align="center">
+      <h1>Enter your new room's name</h1>
+    </div>
+
+    <form name="form" ng-submit="goToNext()">
+      <input required type="text" class="text-center" style="width:100%" ng-model="$parent.roomName"
+             placeholder="Enter Room Name">
       <div align="center">
-        <h1>Enter your new room's name</h1>
-      </div>
-
-
-      <!--
-      <div align="center">
-        <input type="text" class="text-center" style="width:100%" ng-model="$parent.roomName" placeholder="Enter Room Name">
-      </div>
-
-      <div align="center">
-        <input type="text" class="text-center" style="width:100%" ng-model="$parent.password" placeholder="Enter Password">
-      </div>
-
-
-      <div align = "center">
-        <button ion-button block style="width:90%" class="button button-positive button-large" ng-click="createRoom()">Create Room</button>
-      </div>
-      -->
-
-      <form name="form" ng-submit="goToNext()">
-        <input required type="text" class="text-center" style="width:100%" ng-model="$parent.roomName" placeholder="Enter Room Name">
         <button ion-button block type="submit" ng-disabled="form.$invalid" style="width:90%"
-                class="button button-positive button-large" ng-click="createRoom()">Create Room</button>
-      </form>
-    </ion-content>
-  </ion-view>
+                class="button button-positive button-large" ng-click="createRoom()">Create Room
+        </button>
+      </div>
+    </form>
+  </ion-content>
+</ion-view>
 </body>
 
 </html>
