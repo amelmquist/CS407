@@ -185,7 +185,14 @@ starter.controller('roomViewHostController', function (Room, $rootScope, $scope,
         $ionicPopup.alert({
           title: 'Deleting Room'
         });
+
         $scope.endMusic();
+        $scope.roomData.$destroy();
+        $scope.onlineLibrary.$destroy();
+        $scope.requestList.$destroy();
+        $scope.songQueue.$destroy();
+        $scope.usersList.$destroy();
+
         fb.roomRef.remove();
         $ionicViewSwitcher.nextDirection('back');
         $state.go('routingPage');
