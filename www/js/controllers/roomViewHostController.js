@@ -11,7 +11,6 @@ starter.factory('Room', function ($firebaseArray, $firebaseObject) {
   fb.initialize = function (roomID) {
     fb.roomID = roomID;
     fb.roomRef = new Firebase(fburl).child("roomList").child(roomID);
-    fb.messages = $firebaseArray(fb.roomRef.child("messages"));
     fb.songQueue = $firebaseArray(fb.roomRef.child("songQueue"));
     fb.roomData = $firebaseObject(fb.roomRef.child("roomData"));
     fb.library = $firebaseArray(fb.roomRef.child("library"));
@@ -109,7 +108,6 @@ starter.controller('roomViewHostController', function (Room, $rootScope, $scope,
   console.log(roomID);
   var fb = Room.initialize(roomID);
 
-  $scope.messages = fb.messages;
   $scope.roomData = fb.roomData;
   $scope.onlineLibrary = fb.library;
   $scope.requestList = fb.requestList;
@@ -122,6 +120,14 @@ starter.controller('roomViewHostController', function (Room, $rootScope, $scope,
   });
   $scope.songQueue.$watch(function (event) {
     $scope.queueLength = $scope.songQueue.length;
+  });
+
+  $scope.librarySize = -1;
+  $scope.onlineLibrary.$loaded().then(function() {
+    $scope.librarySize = $scope.onlineLibrary.length;
+  });
+  $scope.onlineLibrary.$watch(function() {
+    $scope.librarySize = $scope.onlineLibrary.length;
   });
 
   //Always watch the request list, add new songs when they come in!
@@ -168,27 +174,6 @@ starter.controller('roomViewHostController', function (Room, $rootScope, $scope,
     });
   };
 
-  $scope.addMessage = function () {
-
-    $ionicPopup.prompt({
-      title: 'New Message',
-      template: 'Type your message below!'
-    }).then(function (res) {
-      $scope.messages.$add({
-        "user": $rootScope.name,
-        "message": res
-      });
-      $scope.roomData.numMessages++;
-      $scope.roomData.$save();
-    });
-  };
-
-  $scope.removeMessage = function (message) {
-    $scope.messages.$remove(message);
-    $scope.roomData.numMessages--;
-    $scope.roomData.$save();
-  };
-
   $scope.closeRoom = function () {
     var confirmed = $ionicPopup.confirm({
       title: 'Closing Room',
@@ -208,17 +193,7 @@ starter.controller('roomViewHostController', function (Room, $rootScope, $scope,
     });
   };
 
-  $scope.changeOptions = function () {
-    $state.go('roomOptionsPage');
-  };
-
-  $scope.viewUsers = function () {
-    $state.go('usersPage');
-  };
-
-
   //music queue control mechanisms
-  $scope.musicQueue = [];
 
   // $scope.timeRemaining;
   $scope.hasCurrentSong = false;
@@ -272,9 +247,7 @@ starter.controller('roomViewHostController', function (Room, $rootScope, $scope,
   $scope.play = function () {
     if ($scope.hasCurrentSong) {
       $scope.currentSong.song.play();
-      //} else if ($scope.musicQueue.length > 0)
     } else if ($scope.queueLength > 0) {
-      //var nextSong = new Media($scope.musicQueue[0].songPath,
       var nextSongKey = $scope.songQueue.$keyAt(0);
       var nextSong = new Media($scope.songQueue.$getRecord(nextSongKey).songPath,
         // success callback
@@ -293,13 +266,10 @@ starter.controller('roomViewHostController', function (Room, $rootScope, $scope,
         }
       );
       $scope.currentSong = {
-        //"name": $scope.musicQueue[0].name,
         "name": $scope.songQueue.$getRecord(nextSongKey).name,
-        //"songPath": $scope.musicQueue[0].songPath,
         "songPath": $scope.songQueue.$getRecord(nextSongKey).songPath,
         "song": nextSong
       };
-      //$scope.musicQueue.shift();
       $scope.songQueue.$remove($scope.songQueue.$indexFor(nextSongKey));
       $scope.hasCurrentSong = true;
       $scope.currentSong.song.play();
@@ -331,7 +301,6 @@ starter.controller('roomViewHostController', function (Room, $rootScope, $scope,
   };
 
   $scope.endMusic = function () {
-    //$scope.musicQueue = "";
     if ($scope.hasCurrentSong) {
       $scope.currentSong.song.release();
     }
@@ -407,7 +376,6 @@ starter.controller('roomViewHostController', function (Room, $rootScope, $scope,
 
   $scope.addSongtoQueue = function (songtoAdd) {
     $ionicLoading.show({ template: "Song Added!", noBackdrop: false, duration: 500 });
-    //$scope.musicQueue.push({"name": songtoAdd.name, "songPath": songtoAdd.songPath});
     $scope.songQueue.$add({"name": songtoAdd.name, "songPath": songtoAdd.songPath});
     //songtoAdd.song.release();
   };

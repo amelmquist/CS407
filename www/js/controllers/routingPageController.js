@@ -4,8 +4,15 @@ starter.controller('routingPageController', function($scope, $state, $ionicViewS
   $scope.loadingRooms = true;
 
   $scope.availableRooms = $firebaseArray(new Firebase(fburl).child("roomList"));
+
+  $scope.numRooms = -1;
   $scope.availableRooms.$loaded().then(function() {
+    $scope.numRooms = $scope.availableRooms.length;
     $scope.loadingRooms = false;
+  });
+
+  $scope.availableRooms.$watch(function() {
+    $scope.numRooms = $scope.availableRooms.length;
   });
 
 

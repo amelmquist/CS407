@@ -1,16 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <body>
-<ion-view view-title="Room (Host View)">
+<ion-view>
+  <ion-nav-title>Hosting: {{roomData.roomName}}</ion-nav-title>
   <ion-nav-buttons side="left">
     <button class="button" ng-click="closeRoom()">
       Close Room
-    </button>
-  </ion-nav-buttons>
-
-  <ion-nav-buttons side="right">
-    <button class="button" ng-click="changeOptions()">
-      Options
     </button>
   </ion-nav-buttons>
 
@@ -112,6 +107,7 @@
             <h1 style="text-align: center;">Music Library</h1>
           </div>
           <br>
+          <div align="center" ng-show="librarySize == 0">No songs found in Music folder</div>
           <div class="list">
             <ion-item class="item-text-wrap" ng-repeat="requestSong in onlineLibrary"
                       ng-click="addSongtoQueue(requestSong)">

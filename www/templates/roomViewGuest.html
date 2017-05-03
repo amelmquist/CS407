@@ -2,7 +2,8 @@
 <html lang="en">
 <body>
 
-<ion-view view-title="Room: {{roomInfo.roomName}}">
+<ion-view>
+  <ion-nav-title>{{roomInfo.roomName}}</ion-nav-title>
   <ion-nav-buttons side="primary">
     <button class="button" ng-click="leaveRoom()">
       Leave Room
@@ -74,6 +75,7 @@
             <h1 style="text-align: center;">Music Library</h1>
           </div>
           <br>
+          <div align="center" ng-show="librarySize == 0">Host has no songs available</div>
           <div class="list">
             <ion-item class="item-text-wrap" ng-repeat="song in library"
                       ng-click="requestSong(song)">
