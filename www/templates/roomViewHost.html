@@ -27,7 +27,7 @@
       <ion-content scroll="false">
         <div class="row" style="height:93vh; width:100vw;">
           <div class="col-90" style="">
-            <div name="SongPlaying" style="border: 3px solid;height:25%">
+            <div name="SongPlaying" style="border: 3px solid;height:25%;background-color:lightgreen">
               <div name="NowPlaying"
                    style="display:table; height:25%; width:100%;text-align:center">
                 <span style="display:table-cell; vertical-align: middle">
@@ -64,21 +64,22 @@
               <ion-scroll overflow-scroll="false" zooming="false" direction="y" style="width: 100%; height: 100%">
                 <div style="height:100%;width:100%">
                   <div style="height:100%;width:100%">
-                    <h1 style="text-align: center;">----Playlist----</h1>
+                    <br>
+                    <h3 style="text-align: center; background-color:#e0e9f9">Playlist</h3>
                     <div ng-repeat="thisSong in songQueue" style="height:100%;width:100%">
-                      <div class="row" style="border: 1px solid;height:15%;width:100%">
+                      <div class="row" style="border: 1px solid;height:15%;width:100%; background-color:#e0e9f9">
                         <div class="col-66" style="height:100%;width:66%;text-align: left">
                           <h4 class='ellipsis'>{{thisSong.name}}</h4>
                         </div>
-                        <div class="col-11" style="height:100%;width:11%">
+                        <div class="col-11" style="height:100%;width:11%;text-align:center;line-height:50%">
                           <button class="button button-icon icon ion-arrow-up-c" ng-click="songUp(thisSong)"
                                   style="height:100%; width:100%"></button>
                         </div>
-                        <div class="col-11" style="height:100%;width:11%">
+                        <div class="col-11" style="height:100%;width:11%;text-align:center;line-height:50%">
                           <button class="button button-icon icon ion-arrow-down-c" ng-click="songDown(thisSong)"
                                   style="height:100%; width:100%"></button>
                         </div>
-                        <div class="col-11" style="height:100%;width:11%;">
+                        <div class="col-11" style="height:100%;width:11%;text-align:center;line-height:50%">
                           <button class="button button-icon icon ion-android-delete" ng-click="removeSong(thisSong)"
                                   style="height:100%; width:100%"></button>
                         </div>
