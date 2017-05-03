@@ -1,4 +1,8 @@
-starter.controller('routingPageController', function($scope, $state, $ionicViewSwitcher, $firebaseArray) {
+starter.controller('routingPageController', function($scope, $rootScope, $state, $ionicViewSwitcher, $firebaseArray) {
+
+  $scope.$on('$ionicView.enter', function() {
+    $scope.displayName = $rootScope.name;
+  });
 
   var fburl = "https://jamfly-5effe.firebaseio.com/";
   $scope.loadingRooms = true;
